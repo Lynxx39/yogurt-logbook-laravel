@@ -5,7 +5,7 @@
 <div class="dashboard teacher-dashboard">
   <header class="teacher-header">
     <div class="teacher-header-left">
-      <div class="sidebar-logo">🥛 YogurtLog</div>
+      <div class="sidebar-logo">🥛 YogurtTrack</div>
       <div>
         <h1>Dashboard Pemantauan</h1>
         <p>Pantau aktivitas seluruh siswa secara real-time</p>

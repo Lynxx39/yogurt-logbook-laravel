@@ -11,7 +11,7 @@
   <div class="landing-content">
     <div class="landing-hero">
       <span class="logo-badge">🥛</span>
-      <h1 class="landing-title">YogurtLog</h1>
+      <h1 class="landing-title">YogurtTrack</h1>
       <p class="landing-subtitle">Platform logbook digital pemantau proyek<br>fermentasi yogurt berbasis sains</p>
     </div>
 
@@ -49,9 +49,6 @@
         @endif
         <button type="submit" class="btn btn-primary btn-full btn-lg">Masuk</button>
       </form>
-      <div class="auth-hint">
-        <small>Akun guru: <code>guru</code> / <code>guru123</code></small>
-      </div>
     </div>
 
     {{-- REGISTER --}}

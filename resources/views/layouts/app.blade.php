@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title', 'YogurtLog') — Logbook Proyek Yogurt</title>
+  <title>@yield('title', 'YogurtTrack
+  ') — Logbook Proyek Yogurt</title>
   <meta name="description" content="Platform logbook digital pemantau proyek fermentasi yogurt siswa berbasis indikator ilmiah.">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">

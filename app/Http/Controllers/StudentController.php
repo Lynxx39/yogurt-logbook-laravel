@@ -52,6 +52,7 @@ class StudentController extends Controller
         $user    = User::find(session('user')['id']);
         $logbook = Logbook::with('stages')->firstOrCreate(['user_id' => $user->id]);
         $stagesData = $this->buildStagesData($logbook);
+        $currentStage = $stagesData[$n]['data'] ?? null;
 
         // Stage 1 always saveable (editable). Others: must complete previous.
         if ($n > 1 && !isset($stagesData[1])) return redirect('/student/stage/1');
@@ -60,7 +61,7 @@ class StudentController extends Controller
         // Stage 6 is auto-generated, cannot be submitted manually
         if ($n === 6) return redirect('/student/stage/6');
 
-        $data = $this->extractStageData($request, $n);
+        $data = $this->extractStageData($request, $n, $currentStage);
         if ($data === null) {
             return back()->withErrors(['stage' => 'Data tidak lengkap. Periksa kembali isian Anda.'])->withInput();
         }
@@ -113,7 +114,7 @@ class StudentController extends Controller
         return 6;
     }
 
-    private function extractStageData(Request $request, int $n): ?array
+    private function extractStageData(Request $request, int $n, ?array $currentStage = null): ?array
     {
         switch ($n) {
             case 1:
@@ -124,10 +125,11 @@ class StudentController extends Controller
                 $alasan   = trim($request->input('alasan_inovasi', ''));
                 if (!$kelompok || !$anggota || !$ekstrak || !$komposisi) return null;
 
-                $fotoBahan = null;
+                $fotoBahan = $currentStage['foto_bahan'] ?? null;
                 if ($request->hasFile('foto_bahan') && $request->file('foto_bahan')->isValid()) {
                     $fotoBahan = $request->file('foto_bahan')->store('logbook-photos', 'public');
                 }
+                if (!$fotoBahan) return null;
                 return [
                     'kelompok'      => $kelompok,
                     'anggota'       => $anggota,
@@ -154,6 +156,7 @@ class StudentController extends Controller
                 if ($request->hasFile('jam0_foto') && $request->file('jam0_foto')->isValid()) {
                     $foto = $request->file('jam0_foto')->store('logbook-photos', 'public');
                 }
+                if (!$foto) return null;
                 return [
                     'proses'          => $proses,
                     'prediksi_jam'    => $prediksi,
