@@ -17,6 +17,11 @@
         <h4>📸 Foto Bahan</h4>
         <img src="{{ Storage::url($data['foto_bahan']) }}" class="view-photo" alt="Foto bahan kelompok">
       </div>
+    @else
+      <div class="view-photo-missing">
+        <h4>📸 Foto Bahan</h4>
+        <div class="missing-box">— Foto tidak tersedia. Mohon minta siswa mengunggah ulang atau periksa entri data.</div>
+      </div>
     @endif
   </div>
 
@@ -46,7 +51,11 @@
       @if(isset($j0['ph']))<div class="organo-item"><span class="organo-label">🧪 pH Awal</span><span class="organo-value ph-badge">{{ $j0['ph'] }}</span></div>@endif
     </div>
     @if(!empty($j0['catatan']))<div class="view-note">{{ $j0['catatan'] }}</div>@endif
-    @if(!empty($j0['foto']))<img src="{{ Storage::url($j0['foto']) }}" class="view-photo" alt="Foto jam ke-0">@endif
+    @if(!empty($j0['foto']))
+      <img src="{{ Storage::url($j0['foto']) }}" class="view-photo" alt="Foto jam ke-0">
+    @else
+      <div class="view-photo-missing"><div class="missing-box">Foto jam ke-0 tidak tersedia.</div></div>
+    @endif
   </div>
 
 @elseif(in_array($stageNum, [3, 4, 5]))
@@ -88,7 +97,11 @@
       @endif
     </div>
     @if(!empty($data['catatan']))<div class="view-note">{{ $data['catatan'] }}</div>@endif
-    @if(!empty($data['foto']))<img src="{{ Storage::url($data['foto']) }}" class="view-photo" alt="Foto {{ $label }}">@endif
+    @if(!empty($data['foto']))
+      <img src="{{ Storage::url($data['foto']) }}" class="view-photo" alt="Foto {{ $label }}">
+    @else
+      <div class="view-photo-missing"><div class="missing-box">Foto pengamatan {{ $label }} tidak tersedia.</div></div>
+    @endif
     @if($stageNum === 5 && !empty($data['kesimpulan_awal']))
       <div class="view-note"><strong>📝 Kesimpulan Awal:</strong><br>{{ $data['kesimpulan_awal'] }}</div>
     @endif

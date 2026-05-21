@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<form method="POST" action="{{ route('student.stage.save', 1) }}" class="stage-form" enctype="multipart/form-data">
+<form method="POST" action="{{ route('student.stage.save', 1) }}" class="stage-form" data-stage="{{ $stageNum }}" enctype="multipart/form-data">
   @csrf
   <div class="form-section">
     <h3>👥 Identitas Kelompok</h3>
@@ -74,6 +74,7 @@
              onchange="prevPhoto(this,'s1-prev')" {{ empty($existing['foto_bahan']) ? 'required' : '' }}>
     </div>
     <div id="s1-prev" class="photo-preview hidden"></div>
+    <div id="s1-warning" class="form-error hidden" style="margin-top:8px"></div>
   </div>
 
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
@@ -105,7 +106,7 @@
   <strong>Hindari membuka tutup wadah terlalu sering.</strong> Amati setiap 4 jam sekali.
 </div>
 
-<form method="POST" action="{{ route('student.stage.save', 2) }}" class="stage-form" enctype="multipart/form-data">
+<form method="POST" action="{{ route('student.stage.save', 2) }}" class="stage-form" data-stage="{{ $stageNum }}" enctype="multipart/form-data">
   @csrf
   <div class="form-section">
     <h3>🔬 Proses Pembuatan</h3>
@@ -175,9 +176,11 @@
       <p>Klik untuk pilih foto kondisi awal yogurt</p>
       <small>JPG/PNG, maks. 5MB</small>
       <input type="file" id="s2-foto" name="jam0_foto" accept="image/*" style="display:none"
-             onchange="prevPhoto(this,'s2-prev')">
+             class="required-on-empty"
+             onchange="prevPhoto(this,'s2-prev')" {{ empty($existing['jam0_foto'] ?? $existing['foto'] ?? null) ? 'required' : '' }}>
     </div>
     <div id="s2-prev" class="photo-preview hidden"></div>
+    <div id="s2-warning" class="form-error hidden" style="margin-top:8px"></div>
   </div>
 
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif

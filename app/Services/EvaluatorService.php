@@ -28,6 +28,21 @@ class EvaluatorService
         $ph = isset($s5Data['ph_akhir']) ? (float)$s5Data['ph_akhir'] : null;
         $phOk = $ph !== null && $ph >= 3.8 && $ph <= 4.5;
 
+        // Color heuristics: detect obvious contamination keywords in free-text warna
+        $warnaText = strtolower(trim($s5Data['warna'] ?? ''));
+        $contaminants = ['hitam', 'hijau', 'abu', 'bercak', 'mold', 'jamur'];
+        $warnaSuspect = false;
+        foreach ($contaminants as $c) {
+            if ($c !== '' && strpos($warnaText, $c) !== false) {
+                $warnaSuspect = true;
+                break;
+            }
+        }
+
+        // Determine warna passed: if text indicates contamination, fail regardless of flag.
+        $warnaFlag = isset($s5Data['warna_normal']) ? (bool)$s5Data['warna_normal'] : null;
+        $warnaPassed = $warnaSuspect ? false : ($warnaFlag === null ? true : $warnaFlag);
+
         $indicators = [
             [
                 'id'     => 1,
@@ -61,8 +76,8 @@ class EvaluatorService
                 'id'     => 5,
                 'label'  => 'Warna Normal (Sesuai warna ekstrak bahan)',
                 'desc'   => 'Warna yogurt seharusnya sesuai warna ekstrak; bercak hitam/hijau/abu-abu menandakan kontaminasi',
-                'passed' => (bool)($s5Data['warna_normal'] ?? false),
-                'actual' => 'Warna: ' . ($s5Data['warna'] ?? '-'),
+                'passed' => $warnaPassed,
+                'actual' => 'Warna: ' . ($s5Data['warna'] ?? '-') . ($warnaSuspect ? ' (terdeteksi: kemungkinan kontaminasi)' : ''),
             ],
         ];
 
@@ -76,6 +91,57 @@ class EvaluatorService
             'result'     => $berhasil ? 'berhasil' : 'kurang_berhasil',
             'ph'         => $ph,
         ];
+    }
+
+    // Evaluate from full stages data: consider jam0/jam4/jam8/jam12 coloration
+    public function evaluateFromStages(array $stagesData): ?array
+    {
+        $s5 = $stagesData[5]['data'] ?? null;
+        $base = $this->evaluate($s5);
+        if (!$base) return null;
+
+        // Search earlier stages for suspicious warna
+        $suspectFound = false;
+        $suspectPoints = [];
+        $contaminants = ['hitam', 'hijau', 'abu', 'bercak', 'mold', 'jamur'];
+
+        // check jam0 (stage 2)
+        $j0 = $stagesData[2]['data']['jam0']['warna'] ?? null;
+        $checks = [ ['label' => 'Jam ke-0', 'warna' => $j0],
+                    ['label' => 'Jam ke-4', 'warna' => $stagesData[3]['data']['warna'] ?? null],
+                    ['label' => 'Jam ke-8', 'warna' => $stagesData[4]['data']['warna'] ?? null],
+                    ['label' => 'Jam ke-12', 'warna' => $s5['warna'] ?? null],
+        ];
+
+        foreach ($checks as $c) {
+            $w = strtolower(trim((string)($c['warna'] ?? '')));
+            if ($w === '') continue;
+            foreach ($contaminants as $token) {
+                if ($token !== '' && strpos($w, $token) !== false) {
+                    $suspectFound = true;
+                    $suspectPoints[] = $c['label'];
+                    break 2;
+                }
+            }
+        }
+
+        if ($suspectFound) {
+            // Force 'Warna' indicator (id 5) to fail
+            foreach ($base['indicators'] as &$ind) {
+                if ($ind['id'] === 5) {
+                    $ind['passed'] = false;
+                    $ind['actual'] .= ' (detected contamination in: ' . implode(', ', $suspectPoints) . ')';
+                }
+            }
+            unset($ind);
+
+            // Recompute score and result
+            $base['score'] = count(array_filter($base['indicators'], fn($i) => $i['passed']));
+            $base['result'] = $base['score'] === $base['total'] ? 'berhasil' : 'kurang_berhasil';
+            $base['note'] = 'Evaluasi override: kontaminasi terdeteksi pada tahap sebelumnya; warna dianggap tidak normal.';
+        }
+
+        return $base;
     }
 
     // -------------------------------------------------------

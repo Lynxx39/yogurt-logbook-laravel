@@ -52,10 +52,21 @@ $s1 = $stagesData[1]['data'] ?? null;
           @foreach($rekap as $row)
           <tr class="{{ $row['waktu'] === 12 ? 'row-final' : '' }}">
             <td class="td-waktu"><strong>{{ $row['label'] }}</strong></td>
-            <td><div class="rekap-val">{{ $row['warna'] }}</div>
-              @if($row['warna_normal'] !== null)
-                <div class="rekap-status {{ EvaluatorService::normalClass($row['warna_normal']) }}">{{ EvaluatorService::normalLabel($row['warna_normal']) }}</div>
-              @endif</td>
+            <td>
+              <div class="rekap-val">{{ $row['warna'] }}</div>
+              @php
+                $warnaNormal = $row['warna_normal'] ?? null;
+                // If we have an overall evaluation, override final-stage warna status using its 'Warna' indicator
+                if (($row['waktu'] ?? null) === 12 && isset($evaluation['indicators'])) {
+                  foreach ($evaluation['indicators'] as $ind) {
+                    if ($ind['id'] === 5) { $warnaNormal = $ind['passed']; break; }
+                  }
+                }
+              @endphp
+              @if($warnaNormal !== null)
+                <div class="rekap-status {{ EvaluatorService::normalClass($warnaNormal) }}">{{ EvaluatorService::normalLabel($warnaNormal) }}</div>
+              @endif
+            </td>
             <td><div class="rekap-val">{{ $row['aroma'] }}</div>
               @if($row['aroma_normal'] !== null)
                 <div class="rekap-status {{ EvaluatorService::normalClass($row['aroma_normal']) }}">{{ EvaluatorService::normalLabel($row['aroma_normal']) }}</div>

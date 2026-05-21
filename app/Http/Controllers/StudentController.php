@@ -22,7 +22,7 @@ class StudentController extends Controller
         $logbook = Logbook::with('stages')->firstOrCreate(['user_id' => $user->id]);
         $stagesData = $this->buildStagesData($logbook);
         $activeStage = request('stage', $this->getNextStage($stagesData));
-        $evaluation  = $this->evaluator->evaluate($stagesData[5]['data'] ?? null);
+        $evaluation  = $this->evaluator->evaluateFromStages($stagesData);
         $rekap       = (count($stagesData) >= 5) ? $this->evaluator->buildRekapitulasi($stagesData) : null;
 
         return view('student.dashboard', compact('user', 'logbook', 'stagesData', 'evaluation', 'activeStage', 'rekap'));
@@ -39,7 +39,7 @@ class StudentController extends Controller
         if ($n > 1 && !isset($stagesData[1])) return redirect('/student/stage/1');
         if ($n > 2 && !isset($stagesData[$n - 1])) return redirect('/student/stage/' . ($n - 1));
 
-        $evaluation  = $this->evaluator->evaluate($stagesData[5]['data'] ?? null);
+        $evaluation  = $this->evaluator->evaluateFromStages($stagesData);
         $rekap       = (count($stagesData) >= 5) ? $this->evaluator->buildRekapitulasi($stagesData) : null;
         $activeStage = $n;
 
@@ -152,7 +152,8 @@ class StudentController extends Controller
                 $catatan = trim($request->input('jam0_catatan', ''));
                 if (!$proses || !$warna) return null;
 
-                $foto = null;
+                // Preserve existing photo path if present when student resubmits
+                $foto = $currentStage['jam0']['foto'] ?? null;
                 if ($request->hasFile('jam0_foto') && $request->file('jam0_foto')->isValid()) {
                     $foto = $request->file('jam0_foto')->store('logbook-photos', 'public');
                 }
@@ -174,10 +175,10 @@ class StudentController extends Controller
 
             case 3:
             case 4:
-                return $this->extractOrganoData($request);
+                return $this->extractOrganoData($request, $currentStage);
 
             case 5:
-                $organo = $this->extractOrganoData($request);
+                $organo = $this->extractOrganoData($request, $currentStage);
                 if (!$organo) return null;
                 $phAkhir = $request->input('ph_akhir');
                 $kesimpulan = trim($request->input('kesimpulan_awal', ''));
@@ -188,7 +189,7 @@ class StudentController extends Controller
         return null;
     }
 
-    private function extractOrganoData(Request $request): ?array
+    private function extractOrganoData(Request $request, ?array $currentStage = null): ?array
     {
         $warna          = trim($request->input('warna', ''));
         $warnaNormal    = $request->input('warna_normal') === '1';
@@ -202,7 +203,8 @@ class StudentController extends Controller
 
         if (!$warna || !$aroma || !$tekstur || !$rasa) return null;
 
-        $foto = null;
+        // Preserve existing foto value if present when resubmitting
+        $foto = $currentStage['foto'] ?? null;
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
             $foto = $request->file('foto')->store('logbook-photos', 'public');
         }

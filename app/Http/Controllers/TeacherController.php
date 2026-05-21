@@ -24,7 +24,7 @@ class TeacherController extends Controller
             $logbook    = $student->logbook;
             $stagesData = $this->buildStagesData($logbook);
             $done       = count($stagesData);
-            $evaluation = $this->evaluator->evaluate($stagesData[5]['data'] ?? null);
+            $evaluation = $this->evaluator->evaluateFromStages($stagesData);
 
             if ($done >= 6) $stats['selesai']++;
             if ($evaluation) {
@@ -49,7 +49,7 @@ class TeacherController extends Controller
         $student    = User::where('username', $username)->where('role', 'siswa')->firstOrFail();
         $logbook    = Logbook::with('stages')->where('user_id', $student->id)->first();
         $stagesData = $this->buildStagesData($logbook);
-        $evaluation = $this->evaluator->evaluate($stagesData[5]['data'] ?? null);
+        $evaluation = $this->evaluator->evaluateFromStages($stagesData);
         $rekap      = (count($stagesData) >= 5) ? $this->evaluator->buildRekapitulasi($stagesData) : null;
 
         return view('teacher.student-detail', compact('student', 'logbook', 'stagesData', 'evaluation', 'rekap'));

@@ -128,3 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const flash = document.querySelector('.flash-success');
   if (flash) setTimeout(() => flash.remove(), 4000);
 });
+
+// Legacy shim: if the modular validator is available (resources/js build), call it
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof window.initStageValidation === 'function') {
+    try { window.initStageValidation(); } catch (err) { console.error('initStageValidation (legacy) error', err); }
+  }
+});
