@@ -151,6 +151,23 @@ class EvaluatorService
     {
         $rows = [];
 
+        // Helper: force warna to fail when free-text clearly indicates contamination.
+        $resolveWarnaNormal = function (?string $warnaText, ?bool $storedFlag = null): ?bool {
+            $text = strtolower(trim((string) $warnaText));
+            if ($text === '') {
+                return $storedFlag;
+            }
+
+            $contaminants = ['hitam', 'hijau', 'abu', 'bercak', 'mold', 'jamur'];
+            foreach ($contaminants as $token) {
+                if ($token !== '' && strpos($text, $token) !== false) {
+                    return false;
+                }
+            }
+
+            return $storedFlag ?? true;
+        };
+
         // Jam ke-0 (dari stage 2)
         $s2 = $stagesData[2]['data'] ?? null;
         $jam0 = $s2['jam0'] ?? null;
@@ -158,7 +175,7 @@ class EvaluatorService
             'label'         => 'Jam ke-0',
             'waktu'         => 0,
             'warna'         => $jam0['warna'] ?? '-',
-            'warna_normal'  => null,
+            'warna_normal'  => $resolveWarnaNormal($jam0['warna'] ?? null, null),
             'aroma'         => $jam0['aroma'] ?? '-',
             'aroma_normal'  => null,
             'rasa'          => $jam0['rasa'] ?? '-',
@@ -176,7 +193,7 @@ class EvaluatorService
             'label'         => 'Jam ke-4',
             'waktu'         => 4,
             'warna'         => $s3['warna'] ?? '-',
-            'warna_normal'  => isset($s3['warna_normal']) ? (bool)$s3['warna_normal'] : null,
+            'warna_normal'  => $resolveWarnaNormal($s3['warna'] ?? null, isset($s3['warna_normal']) ? (bool)$s3['warna_normal'] : null),
             'aroma'         => $s3['aroma'] ?? '-',
             'aroma_normal'  => isset($s3['aroma_normal']) ? (bool)$s3['aroma_normal'] : null,
             'rasa'          => $s3['rasa'] ?? '-',
@@ -194,7 +211,7 @@ class EvaluatorService
             'label'         => 'Jam ke-8',
             'waktu'         => 8,
             'warna'         => $s4['warna'] ?? '-',
-            'warna_normal'  => isset($s4['warna_normal']) ? (bool)$s4['warna_normal'] : null,
+            'warna_normal'  => $resolveWarnaNormal($s4['warna'] ?? null, isset($s4['warna_normal']) ? (bool)$s4['warna_normal'] : null),
             'aroma'         => $s4['aroma'] ?? '-',
             'aroma_normal'  => isset($s4['aroma_normal']) ? (bool)$s4['aroma_normal'] : null,
             'rasa'          => $s4['rasa'] ?? '-',
@@ -212,7 +229,7 @@ class EvaluatorService
             'label'         => 'Jam ke-12 (Final)',
             'waktu'         => 12,
             'warna'         => $s5['warna'] ?? '-',
-            'warna_normal'  => isset($s5['warna_normal']) ? (bool)$s5['warna_normal'] : null,
+            'warna_normal'  => $resolveWarnaNormal($s5['warna'] ?? null, isset($s5['warna_normal']) ? (bool)$s5['warna_normal'] : null),
             'aroma'         => $s5['aroma'] ?? '-',
             'aroma_normal'  => isset($s5['aroma_normal']) ? (bool)$s5['aroma_normal'] : null,
             'rasa'          => $s5['rasa'] ?? '-',
