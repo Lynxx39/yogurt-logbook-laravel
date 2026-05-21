@@ -151,21 +151,36 @@ class EvaluatorService
     {
         $rows = [];
 
-        // Helper: force warna to fail when free-text clearly indicates contamination.
-        $resolveWarnaNormal = function (?string $warnaText, ?bool $storedFlag = null): ?bool {
-            $text = strtolower(trim((string) $warnaText));
-            if ($text === '') {
+        // Helper: force a value to fail when free-text clearly indicates abnormality.
+        $resolveNormalFromText = function (?string $text, ?bool $storedFlag, array $negativeKeywords, bool $defaultTrue = true): ?bool {
+            $value = strtolower(trim((string) $text));
+            if ($value === '') {
                 return $storedFlag;
             }
 
-            $contaminants = ['hitam', 'hijau', 'abu', 'bercak', 'mold', 'jamur'];
-            foreach ($contaminants as $token) {
-                if ($token !== '' && strpos($text, $token) !== false) {
+            foreach ($negativeKeywords as $token) {
+                if ($token !== '' && strpos($value, $token) !== false) {
                     return false;
                 }
             }
 
-            return $storedFlag ?? true;
+            return $storedFlag ?? $defaultTrue;
+        };
+
+        $resolveWarnaNormal = function (?string $warnaText, ?bool $storedFlag = null) use ($resolveNormalFromText): ?bool {
+            return $resolveNormalFromText($warnaText, $storedFlag, ['hitam', 'hijau', 'abu', 'bercak', 'mold', 'jamur'], true);
+        };
+
+        $resolveAromaNormal = function (?string $aromaText, ?bool $storedFlag = null) use ($resolveNormalFromText): ?bool {
+            return $resolveNormalFromText($aromaText, $storedFlag, ['busuk', 'tengik', 'basi', 'apek', 'berjamur', 'tidak sedap', 'bau menyengat'], true);
+        };
+
+        $resolveRasaNormal = function (?string $rasaText, ?bool $storedFlag = null) use ($resolveNormalFromText): ?bool {
+            return $resolveNormalFromText($rasaText, $storedFlag, ['busuk', 'tengik', 'basi', 'pahit', 'hambar', 'asam berlebih', 'off'], true);
+        };
+
+        $resolveTeksturNormal = function (?string $teksturText, ?bool $storedFlag = null) use ($resolveNormalFromText): ?bool {
+            return $resolveNormalFromText($teksturText, $storedFlag, ['encer', 'berair', 'pecah', 'menggumpal', 'menggumpal kasar', 'pisah', 'lendir'], true);
         };
 
         // Jam ke-0 (dari stage 2)
@@ -177,11 +192,11 @@ class EvaluatorService
             'warna'         => $jam0['warna'] ?? '-',
             'warna_normal'  => $resolveWarnaNormal($jam0['warna'] ?? null, null),
             'aroma'         => $jam0['aroma'] ?? '-',
-            'aroma_normal'  => null,
+            'aroma_normal'  => $resolveAromaNormal($jam0['aroma'] ?? null, null),
             'rasa'          => $jam0['rasa'] ?? '-',
-            'rasa_normal'   => null,
+            'rasa_normal'   => $resolveRasaNormal($jam0['rasa'] ?? null, null),
             'tekstur'       => $jam0['tekstur'] ?? 'Cair (awal)',
-            'tekstur_normal'=> null,
+            'tekstur_normal'=> $resolveTeksturNormal($jam0['tekstur'] ?? null, null),
             'ph'            => $jam0['ph'] ?? null,
             'catatan'       => $jam0['catatan'] ?? '',
             'foto'          => $jam0['foto'] ?? null,
@@ -195,11 +210,11 @@ class EvaluatorService
             'warna'         => $s3['warna'] ?? '-',
             'warna_normal'  => $resolveWarnaNormal($s3['warna'] ?? null, isset($s3['warna_normal']) ? (bool)$s3['warna_normal'] : null),
             'aroma'         => $s3['aroma'] ?? '-',
-            'aroma_normal'  => isset($s3['aroma_normal']) ? (bool)$s3['aroma_normal'] : null,
+            'aroma_normal'  => $resolveAromaNormal($s3['aroma'] ?? null, isset($s3['aroma_normal']) ? (bool)$s3['aroma_normal'] : null),
             'rasa'          => $s3['rasa'] ?? '-',
-            'rasa_normal'   => isset($s3['rasa_normal']) ? (bool)$s3['rasa_normal'] : null,
+            'rasa_normal'   => $resolveRasaNormal($s3['rasa'] ?? null, isset($s3['rasa_normal']) ? (bool)$s3['rasa_normal'] : null),
             'tekstur'       => $s3['tekstur'] ?? '-',
-            'tekstur_normal'=> isset($s3['tekstur_normal']) ? (bool)$s3['tekstur_normal'] : null,
+            'tekstur_normal'=> $resolveTeksturNormal($s3['tekstur'] ?? null, isset($s3['tekstur_normal']) ? (bool)$s3['tekstur_normal'] : null),
             'ph'            => null,
             'catatan'       => $s3['catatan'] ?? '',
             'foto'          => $s3['foto'] ?? null,
@@ -213,11 +228,11 @@ class EvaluatorService
             'warna'         => $s4['warna'] ?? '-',
             'warna_normal'  => $resolveWarnaNormal($s4['warna'] ?? null, isset($s4['warna_normal']) ? (bool)$s4['warna_normal'] : null),
             'aroma'         => $s4['aroma'] ?? '-',
-            'aroma_normal'  => isset($s4['aroma_normal']) ? (bool)$s4['aroma_normal'] : null,
+            'aroma_normal'  => $resolveAromaNormal($s4['aroma'] ?? null, isset($s4['aroma_normal']) ? (bool)$s4['aroma_normal'] : null),
             'rasa'          => $s4['rasa'] ?? '-',
-            'rasa_normal'   => isset($s4['rasa_normal']) ? (bool)$s4['rasa_normal'] : null,
+            'rasa_normal'   => $resolveRasaNormal($s4['rasa'] ?? null, isset($s4['rasa_normal']) ? (bool)$s4['rasa_normal'] : null),
             'tekstur'       => $s4['tekstur'] ?? '-',
-            'tekstur_normal'=> isset($s4['tekstur_normal']) ? (bool)$s4['tekstur_normal'] : null,
+            'tekstur_normal'=> $resolveTeksturNormal($s4['tekstur'] ?? null, isset($s4['tekstur_normal']) ? (bool)$s4['tekstur_normal'] : null),
             'ph'            => null,
             'catatan'       => $s4['catatan'] ?? '',
             'foto'          => $s4['foto'] ?? null,
@@ -231,11 +246,11 @@ class EvaluatorService
             'warna'         => $s5['warna'] ?? '-',
             'warna_normal'  => $resolveWarnaNormal($s5['warna'] ?? null, isset($s5['warna_normal']) ? (bool)$s5['warna_normal'] : null),
             'aroma'         => $s5['aroma'] ?? '-',
-            'aroma_normal'  => isset($s5['aroma_normal']) ? (bool)$s5['aroma_normal'] : null,
+            'aroma_normal'  => $resolveAromaNormal($s5['aroma'] ?? null, isset($s5['aroma_normal']) ? (bool)$s5['aroma_normal'] : null),
             'rasa'          => $s5['rasa'] ?? '-',
-            'rasa_normal'   => isset($s5['rasa_normal']) ? (bool)$s5['rasa_normal'] : null,
+            'rasa_normal'   => $resolveRasaNormal($s5['rasa'] ?? null, isset($s5['rasa_normal']) ? (bool)$s5['rasa_normal'] : null),
             'tekstur'       => $s5['tekstur'] ?? '-',
-            'tekstur_normal'=> isset($s5['tekstur_normal']) ? (bool)$s5['tekstur_normal'] : null,
+            'tekstur_normal'=> $resolveTeksturNormal($s5['tekstur'] ?? null, isset($s5['tekstur_normal']) ? (bool)$s5['tekstur_normal'] : null),
             'ph'            => $s5['ph_akhir'] ?? null,
             'catatan'       => $s5['catatan'] ?? '',
             'foto'          => $s5['foto'] ?? null,
