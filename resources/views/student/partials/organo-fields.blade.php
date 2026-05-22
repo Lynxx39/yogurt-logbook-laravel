@@ -6,7 +6,7 @@
   {{-- WARNA --}}
   <div class="organo-block">
     <div class="organo-header">🎨 Warna</div>
-    <div class="organo-desc">Normal: Sesuai warna ekstrak bahan. Tidak Normal: Muncul bercak hitam/hijau/abu-abu.</div>
+    <div class="organo-desc">Normal: Sesuai warna ekstrak bahan (contoh buah naga bisa ungu gelap). Tidak Normal: Ada bercak/bintik hitam-hijau-abu atau tanda jamur.</div>
     <div class="form-row">
       <div class="form-group">
         <label>Deskripsi Warna yang Diamati</label>
