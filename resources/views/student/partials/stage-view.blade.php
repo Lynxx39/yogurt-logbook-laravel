@@ -58,10 +58,10 @@
     @endif
   </div>
 
-@elseif(in_array($stageNum, [3, 4, 5]))
+@elseif(in_array($stageNum, [4, 5]))
   @php
-    $labels = [3 => 'Jam ke-4', 4 => 'Jam ke-8', 5 => 'Jam ke-12 (Final)'];
-    $label = $labels[$stageNum];
+    $labels = [4 => 'Jam ke-8', 5 => 'Jam ke-12 (Final)'];
+    $label = $labels[$stageNum] ?? 'Pengamatan';
   @endphp
   <div class="view-section">
     <div class="info-banner">🕐 Data Pengamatan {{ $label }}</div>

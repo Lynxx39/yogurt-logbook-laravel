@@ -31,13 +31,16 @@ class StudentController extends Controller
     public function showStage(int $n)
     {
         if ($n < 1 || $n > 6) return redirect('/student');
+        // If someone requests the removed stage 3, redirect to stage 4
+        if ($n === 3) return redirect('/student/stage/4');
         $user    = User::find(session('user')['id']);
         $logbook = Logbook::with('stages')->firstOrCreate(['user_id' => $user->id]);
         $stagesData = $this->buildStagesData($logbook);
 
-        // Stage 1 is always accessible (editable). Others sequential.
+        // Stage 1 is always accessible (editable). Use logical previous stage (skip removed stage 3)
         if ($n > 1 && !isset($stagesData[1])) return redirect('/student/stage/1');
-        if ($n > 2 && !isset($stagesData[$n - 1])) return redirect('/student/stage/' . ($n - 1));
+        $prev = $this->prevStageNumber($n);
+        if ($prev !== null && !isset($stagesData[$prev])) return redirect('/student/stage/' . $prev);
 
         $evaluation  = $this->evaluator->evaluateFromStages($stagesData);
         $rekap       = (count($stagesData) >= 5) ? $this->evaluator->buildRekapitulasi($stagesData) : null;
@@ -49,14 +52,17 @@ class StudentController extends Controller
     public function saveStage(Request $request, int $n)
     {
         if ($n < 1 || $n > 6) return redirect('/student');
+        // Do not allow saving for removed stage 3
+        if ($n === 3) return redirect('/student/stage/4')->with('info', 'Tahap pengamatan awal telah dihapus; lanjutkan ke Jam ke-8.');
         $user    = User::find(session('user')['id']);
         $logbook = Logbook::with('stages')->firstOrCreate(['user_id' => $user->id]);
         $stagesData = $this->buildStagesData($logbook);
         $currentStage = $stagesData[$n]['data'] ?? null;
 
-        // Stage 1 always saveable (editable). Others: must complete previous.
+        // Stage 1 always saveable (editable). Others: must complete previous (skip removed stage 3)
         if ($n > 1 && !isset($stagesData[1])) return redirect('/student/stage/1');
-        if ($n > 2 && !isset($stagesData[$n - 1])) return redirect('/student/stage/' . ($n - 1));
+        $prev = $this->prevStageNumber($n);
+        if ($prev !== null && !isset($stagesData[$prev])) return redirect('/student/stage/' . $prev);
 
         // Stage 6 is auto-generated, cannot be submitted manually
         if ($n === 6) return redirect('/student/stage/6');
@@ -79,15 +85,14 @@ class StudentController extends Controller
             );
             return redirect('/student/stage/6')->with('success', '✨ Pengamatan final tersimpan! Lihat laporan dan hasil evaluasi di bawah.');
         }
-
         $messages = [
             1 => '✔️ Rencana proyek disimpan! Kamu bisa mengubahnya kapan saja.',
             2 => '✔️ Data Production Day tersimpan!',
-            3 => '✔️ Pengamatan Jam ke-4 tersimpan!',
             4 => '✔️ Pengamatan Jam ke-8 tersimpan!',
+            5 => '✔️ Pengamatan Jam ke-12 tersimpan!',
         ];
 
-        $next = min($n + 1, 6);
+        $next = $this->nextStageNumber($n);
         return redirect("/student/stage/{$next}")->with('success', $messages[$n] ?? '✔️ Tersimpan!');
     }
 
@@ -106,12 +111,33 @@ class StudentController extends Controller
 
     private function getNextStage(array $stagesData): int
     {
-        // Stage 1 always accessible
-        if (!isset($stagesData[1])) return 1;
-        for ($i = 2; $i <= 6; $i++) {
-            if (!isset($stagesData[$i])) return $i;
+        // Stage order (skip removed stage 3)
+        $order = [1,2,4,5,6];
+        foreach ($order as $s) {
+            if (!isset($stagesData[$s])) return $s;
         }
         return 6;
+    }
+
+    private function orderedStages(): array
+    {
+        return [1,2,4,5,6];
+    }
+
+    private function nextStageNumber(int $n): int
+    {
+        $order = $this->orderedStages();
+        $idx = array_search($n, $order, true);
+        if ($idx === false) return 6;
+        return $order[min($idx + 1, count($order) - 1)];
+    }
+
+    private function prevStageNumber(int $n): ?int
+    {
+        $order = $this->orderedStages();
+        $idx = array_search($n, $order, true);
+        if ($idx === false || $idx === 0) return null;
+        return $order[$idx - 1];
     }
 
     private function extractStageData(Request $request, int $n, ?array $currentStage = null): ?array

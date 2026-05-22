@@ -58,7 +58,15 @@ function switchTab(tab) {
 // ---- Password toggle ----
 function togglePw(id) {
   const el = document.getElementById(id);
-  if (el) el.type = el.type === 'password' ? 'text' : 'password';
+  if (!el) return;
+  const button = el.parentElement ? el.parentElement.querySelector('.toggle-pass') : null;
+  const isPassword = el.type === 'password';
+  el.type = isPassword ? 'text' : 'password';
+  if (button) {
+    button.textContent = isPassword ? '🙈' : '👁';
+    button.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
+    button.setAttribute('title', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
+  }
 }
 
 // ---- Photo preview ----
@@ -168,6 +176,7 @@ function showPhHint(val) {
 // ---- Flash message auto-dismiss ----
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
+  initStageValidation();
   const flash = document.querySelector('.flash-success');
   if (flash) setTimeout(() => flash.remove(), 4000);
 });
@@ -178,3 +187,44 @@ document.addEventListener('DOMContentLoaded', () => {
     try { window.initStageValidation(); } catch (err) { console.error('initStageValidation (legacy) error', err); }
   }
 });
+
+function initStageValidation() {
+  document.querySelectorAll('.stage-form').forEach(form => {
+    if (form.dataset.validationBound === '1') return;
+    form.dataset.validationBound = '1';
+    form.addEventListener('submit', e => {
+      const requiredFields = Array.from(form.querySelectorAll('[required]'));
+      for (const field of requiredFields) {
+        if ((field.type === 'radio' || field.type === 'checkbox')) {
+          const anyChecked = Array.from(form.querySelectorAll('[name="' + field.name + '"]')).some(el => el.checked);
+          if (!anyChecked) {
+            e.preventDefault();
+            alert('Mohon lengkapi semua kolom yang wajib diisi sebelum menyimpan.');
+            field.focus();
+            return;
+          }
+          continue;
+        }
+
+        if (field.type === 'file') {
+          if (!field.files || field.files.length === 0) {
+            e.preventDefault();
+            alert('Foto wajib belum diunggah.');
+            field.focus();
+            return;
+          }
+          continue;
+        }
+
+        if (!field.value || field.value.toString().trim() === '') {
+          e.preventDefault();
+          alert('Mohon lengkapi semua kolom yang wajib diisi sebelum menyimpan.');
+          field.focus();
+          return;
+        }
+      }
+    });
+  });
+}
+
+window.initStageValidation = initStageValidation;

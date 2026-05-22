@@ -11,7 +11,6 @@ class EvaluatorService
         return [
             1 => ['title' => 'Formulation Stage',              'icon' => '🧾', 'color' => '#7C6FFF', 'editable' => true],
             2 => ['title' => 'Production Day',                 'icon' => '⚗️', 'color' => '#00A8FF', 'editable' => false],
-            3 => ['title' => 'Pengamatan Jam ke-4',            'icon' => '🕒', 'color' => '#FF9500', 'editable' => false],
             4 => ['title' => 'Pengamatan Jam ke-8',            'icon' => '🕗', 'color' => '#FF6B6B', 'editable' => false],
             5 => ['title' => 'Pengamatan Final (Jam ke-12)',   'icon' => '⏱️', 'color' => '#00C896', 'editable' => false],
             6 => ['title' => 'Lab Report & Feedback',          'icon' => '📈', 'color' => '#F5C842', 'editable' => false],
@@ -126,9 +125,8 @@ class EvaluatorService
         // check jam0 (stage 2)
         $j0 = $stagesData[2]['data']['jam0']['warna'] ?? null;
         $checks = [ ['label' => 'Jam ke-0', 'warna' => $j0],
-                    ['label' => 'Jam ke-4', 'warna' => $stagesData[3]['data']['warna'] ?? null],
-                    ['label' => 'Jam ke-8', 'warna' => $stagesData[4]['data']['warna'] ?? null],
-                    ['label' => 'Jam ke-12', 'warna' => $s5['warna'] ?? null],
+                ['label' => 'Jam ke-8', 'warna' => $stagesData[4]['data']['warna'] ?? null],
+                ['label' => 'Jam ke-12', 'warna' => $s5['warna'] ?? null],
         ];
 
         foreach ($checks as $c) {
@@ -189,23 +187,6 @@ class EvaluatorService
             'foto'          => $jam0['foto'] ?? null,
         ];
 
-        // Jam ke-4 (stage 3)
-        $s3 = $stagesData[3]['data'] ?? null;
-        $rows[] = [
-            'label'         => 'Jam ke-4',
-            'waktu'         => 4,
-            'warna'         => $s3['warna'] ?? '-',
-            'warna_normal'  => $this->resolveWarnaNormal($s3['warna'] ?? null, isset($s3['warna_normal']) ? (bool)$s3['warna_normal'] : null, $ekstrak),
-            'aroma'         => $s3['aroma'] ?? '-',
-            'aroma_normal'  => $this->resolveAromaNormal($s3['aroma'] ?? null, isset($s3['aroma_normal']) ? (bool)$s3['aroma_normal'] : null),
-            'rasa'          => $s3['rasa'] ?? '-',
-            'rasa_normal'   => $this->resolveRasaNormal($s3['rasa'] ?? null, isset($s3['rasa_normal']) ? (bool)$s3['rasa_normal'] : null),
-            'tekstur'       => $s3['tekstur'] ?? '-',
-            'tekstur_normal'=> $this->resolveTeksturNormal($s3['tekstur'] ?? null, isset($s3['tekstur_normal']) ? (bool)$s3['tekstur_normal'] : null),
-            'ph'            => null,
-            'catatan'       => $s3['catatan'] ?? '',
-            'foto'          => $s3['foto'] ?? null,
-        ];
 
         // Jam ke-8 (stage 4)
         $s4 = $stagesData[4]['data'] ?? null;
