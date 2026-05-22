@@ -4,8 +4,9 @@
 @php
 use App\Services\EvaluatorService;
 $stagesDef = EvaluatorService::stagesDef();
+$total = count($stagesDef);
 $done = count($stagesData);
-$pct  = round($done / 6 * 100);
+$pct  = round($done / ($total ?: 1) * 100);
 $stageDef = $stagesDef[$activeStage];
 @endphp
 
@@ -49,7 +50,7 @@ $stageDef = $stagesDef[$activeStage];
     <div class="sidebar-progress">
       <div class="progress-label"><span>Progress</span><span class="progress-value">{{ $pct }}%</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:{{ $pct }}%"></div></div>
-      <div class="progress-stages">{{ $done }} dari 6 tahap selesai</div>
+      <div class="progress-stages">{{ $done }} dari {{ $total }} tahap selesai</div>
     </div>
     <div class="sidebar-bottom">
       <form method="POST" action="/logout">@csrf
@@ -68,7 +69,7 @@ $stageDef = $stagesDef[$activeStage];
       <div>
         <h1>{{ $stageDef['icon'] }} {{ $stageDef['title'] }}</h1>
         <p class="content-subtitle">
-          Tahap {{ $activeStage }} dari 6
+          Tahap {{ $activeStage }} dari {{ $total }}
           @if(!empty($stageDef['editable'])) &nbsp;•&nbsp; <em style="color:var(--accent)">Dapat diedit kapan saja</em>@endif
         </p>
       </div>
@@ -84,9 +85,9 @@ $stageDef = $stagesDef[$activeStage];
     </div>
 
     <div class="content-body">
-      {{-- Stage 6 always shows auto-report if data exists --}}
-      @if($activeStage === 6)
-        @if(isset($stagesData[6]))
+      {{-- Last stage always shows auto-report if data exists --}}
+        @if($activeStage === $total)
+          @if(isset($stagesData[$total]))
           @include('student.partials.lab-report', compact('stagesData','evaluation','rekap'))
         @else
           <div class="info-banner">📑 Lab report akan muncul otomatis setelah kamu menyelesaikan Pengamatan Final (Jam ke-12).</div>

@@ -52,12 +52,17 @@
       </div>
     @else
       <div class="student-grid" id="student-grid">
-        @php $stageColors = ['#7C6FFF','#00A8FF','#FF9500','#FF6B6B','#00C896','#F5C842']; @endphp
+        @php
+          $stagesDef = \App\Services\EvaluatorService::stagesDef();
+          $total = count($stagesDef);
+          $stageColors = [];
+          foreach ($stagesDef as $d) { $stageColors[] = $d['color'] ?? '#cccccc'; }
+        @endphp
         @foreach($studentData as $i => $sd)
           @php
             $ev = $sd['evaluation'];
             $statusData = 'in_progress'; $cardCls = '';
-            $badge = '<span class="badge badge-pending">'.$sd['done'].'/6 Tahap</span>';
+            $badge = '<span class="badge badge-pending">'.$sd['done'].'/'.$total.' Tahap</span>';
             if ($ev) {
               if ($ev['result'] === 'berhasil') {
                 $statusData='berhasil'; $cardCls='card-success';
@@ -89,7 +94,7 @@
             </div>
             <div class="stage-progress-row">
               <div class="stage-dots">
-                @for($s=1;$s<=6;$s++)
+                @for($s=1;$s<=$total;$s++)
                   <div class="stage-dot {{ isset($sd['stagesData'][$s])?'done':'' }}"
                        style="--dot-color:{{ $stageColors[$s-1] }}" title="Tahap {{ $s }}"></div>
                 @endfor

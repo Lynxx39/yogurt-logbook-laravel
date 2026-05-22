@@ -4,6 +4,7 @@
 @php
 use App\Services\EvaluatorService;
 $stagesDef = EvaluatorService::stagesDef();
+$total = count($stagesDef);
 $done = count($stagesData);
 $s1 = $stagesData[1]['data'] ?? null;
 @endphp
@@ -18,7 +19,7 @@ $s1 = $stagesData[1]['data'] ?? null;
         <p>
           {{ $student->name }} &nbsp;•&nbsp;
           {{ $s1['ekstrak'] ?? '' }} &nbsp;•&nbsp;
-          {{ $done }}/6 Tahap &nbsp;•&nbsp;
+          {{ $done }}/{{ $total }} Tahap &nbsp;•&nbsp;
           Bergabung {{ $student->created_at->format('d M Y') }}
         </p>
       </div>
@@ -33,7 +34,7 @@ $s1 = $stagesData[1]['data'] ?? null;
     </div>
   @else
     <div class="info-banner" style="margin:24px 32px">
-      ℹ️ Evaluasi tersedia setelah siswa menyelesaikan Pengamatan Final (Jam ke-12). Saat ini {{ $done }}/6 tahap selesai.
+      ℹ️ Evaluasi tersedia setelah siswa menyelesaikan Pengamatan Final (Jam ke-12). Saat ini {{ $done }}/{{ $total }} tahap selesai.
     </div>
   @endif
 
@@ -109,7 +110,7 @@ $s1 = $stagesData[1]['data'] ?? null;
           </div>
           <span class="stage-toggle" id="toggle-{{ $num }}">▼</span>
         </div>
-        @if($hasData && $num < 6)
+        @if($hasData && $num < $total)
         <div class="stage-card-body" id="body-{{ $num }}" style="display:none">
           @include('student.partials.stage-view', [
             'stageNum'    => $num,
