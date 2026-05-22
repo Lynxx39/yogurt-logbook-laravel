@@ -6,7 +6,7 @@
   {{-- WARNA --}}
   <div class="organo-block">
     <div class="organo-header">🎨 Warna</div>
-    <div class="organo-desc">Normal: Sesuai warna ekstrak bahan. Tidak Normal: Muncul bercak hitam/hijau/abu-abu.</div>
+    <div class="organo-desc">Normal: Sesuai warna ekstrak bahan (contoh buah naga bisa ungu gelap). Tidak Normal: Ada bercak/bintik hitam-hijau-abu atau tanda jamur.</div>
     <div class="form-row">
       <div class="form-group">
         <label>Deskripsi Warna yang Diamati</label>
@@ -116,14 +116,14 @@
   <div class="form-row">
     <div class="form-group">
       <label>📝 Catatan Tambahan</label>
-      <textarea name="catatan" rows="3" placeholder="Pengamatan tambahan, perubahan yang menarik..."></textarea>
+      <textarea name="catatan" rows="3" placeholder="Pengamatan tambahan, perubahan yang menarik..." required></textarea>
     </div>
     <div class="form-group">
       <label>📸 Foto Kondisi Yogurt {{ $jamLabel }}</label>
       <div class="photo-upload-area-sm" onclick="document.getElementById('organo-foto-{{ $stageNum }}').click()">
         <span class="photo-upload-icon" style="font-size:24px">🖼️</span>
         <p>Klik untuk pilih foto</p>
-        <input type="file" id="organo-foto-{{ $stageNum }}" name="foto" accept="image/*" style="display:none"
+        <input type="file" id="organo-foto-{{ $stageNum }}" name="foto" accept="image/*" style="display:none" required
                onchange="prevPhoto(this,'organo-prev-{{ $stageNum }}')">
       </div>
       <div id="organo-prev-{{ $stageNum }}" class="photo-preview hidden"></div>

@@ -41,7 +41,7 @@
           <div class="input-with-toggle">
             <input type="password" id="login-password" name="password"
                    placeholder="Masukkan password" required autocomplete="current-password">
-            <button type="button" class="toggle-pass" onclick="togglePw('login-password')">◉</button>
+            <button type="button" class="toggle-pass" onclick="togglePw('login-password')" aria-label="Tampilkan password" title="Tampilkan password">👁</button>
           </div>
         </div>
         @if($errors->has('login'))
@@ -77,7 +77,7 @@
           <div class="input-with-toggle">
             <input type="password" id="reg-password" name="password"
                    placeholder="Minimal 4 karakter" required>
-            <button type="button" class="toggle-pass" onclick="togglePw('reg-password')">◉</button>
+            <button type="button" class="toggle-pass" onclick="togglePw('reg-password')" aria-label="Tampilkan password" title="Tampilkan password">👁</button>
           </div>
         </div>
         @if($errors->any())

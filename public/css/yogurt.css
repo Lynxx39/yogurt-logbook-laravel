@@ -421,15 +421,26 @@ select { cursor: pointer; }
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   cursor: pointer;
-  font-size: 17px;
-  opacity: 0.5;
-  transition: opacity var(--transition);
+  font-size: 16px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), opacity var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
   line-height: 1;
 }
-.toggle-pass:hover { opacity: 1; }
+.toggle-pass:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.04);
+  border-color: var(--border-focus);
+}
 
 .input-with-unit { position: relative; }
 .input-with-unit input { padding-right: 52px; }

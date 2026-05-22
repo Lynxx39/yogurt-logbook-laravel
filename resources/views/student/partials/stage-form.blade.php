@@ -52,7 +52,7 @@
     <div class="form-group">
       <label for="s1-alasan">Mengapa kalian memilih komposisi dan jenis ekstrak tersebut? Apa inovasi yang ingin kalian tonjolkan?</label>
       <textarea id="s1-alasan" name="alasan_inovasi" rows="4"
-                placeholder="Jelaskan alasan dan inovasi kelompok kalian...">{{ $existing['alasan_inovasi'] ?? old('alasan_inovasi') }}</textarea>
+                placeholder="Jelaskan alasan dan inovasi kelompok kalian..." required>{{ $existing['alasan_inovasi'] ?? old('alasan_inovasi') }}</textarea>
     </div>
   </div>
 
@@ -103,7 +103,7 @@
 <div class="attention-box">
   ❗ <strong>PERHATIAN:</strong> Simpan yogurt di <strong>suhu ruang (25–30°C)</strong>.
   Tempatkan di ruangan yang <strong>gelap</strong>, tidak terkena sinar matahari langsung.
-  <strong>Hindari membuka tutup wadah terlalu sering.</strong> Amati setiap 4 jam sekali.
+  <strong>Jangan membuka wadah sama sekali hingga pengamatan pertama di jam ke-8</strong> untuk meminimalkan risiko kontaminasi bakteri luar.
 </div>
 
 <form method="POST" action="{{ route('student.stage.save', 2) }}" class="stage-form" data-stage="{{ $stageNum }}" enctype="multipart/form-data">
@@ -124,13 +124,13 @@
         <div class="form-group">
           <label>Prediksi Jam ke-</label>
           <div class="input-with-unit">
-            <input type="number" name="prediksi_jam" min="1" max="12" step="1" placeholder="Contoh: 8" value="{{ old('prediksi_jam') }}">
+              <input type="number" name="prediksi_jam" min="1" max="12" step="1" placeholder="Contoh: 8" value="{{ old('prediksi_jam') }}" required>
             <span class="input-unit">jam</span>
           </div>
         </div>
         <div class="form-group">
           <label>Alasan Prediksi</label>
-          <textarea name="alasan_prediksi" rows="3" placeholder="Karena...">{{ old('alasan_prediksi') }}</textarea>
+          <textarea name="alasan_prediksi" rows="3" placeholder="Karena..." required>{{ old('alasan_prediksi') }}</textarea>
         </div>
       </div>
     </div>
@@ -146,13 +146,13 @@
       </div>
       <div class="form-group">
         <label>👃 Aroma Awal</label>
-        <input type="text" name="jam0_aroma" placeholder="Cth: Aroma susu segar + stroberi" value="{{ old('jam0_aroma') }}">
+        <input type="text" name="jam0_aroma" placeholder="Cth: Aroma susu segar + stroberi" value="{{ old('jam0_aroma') }}" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>👅 Rasa Awal</label>
-        <input type="text" name="jam0_rasa" placeholder="Cth: Manis, segar beraroma stroberi" value="{{ old('jam0_rasa') }}">
+        <input type="text" name="jam0_rasa" placeholder="Cth: Manis, segar beraroma stroberi" value="{{ old('jam0_rasa') }}" required>
       </div>
       <div class="form-group">
         <label>🥄 Tekstur Awal</label>
@@ -168,7 +168,7 @@
     </div>
     <div class="form-group">
       <label>Catatan Tambahan</label>
-      <textarea name="jam0_catatan" rows="2" placeholder="Catatan lain...">{{ old('jam0_catatan') }}</textarea>
+      <textarea name="jam0_catatan" rows="2" placeholder="Catatan lain..." required>{{ old('jam0_catatan') }}</textarea>
     </div>
     <h4>📸 Foto Produk Sebelum Fermentasi <span class="required-badge">WAJIB</span></h4>
     <div class="photo-upload-area" onclick="document.getElementById('s2-foto').click()">
@@ -188,55 +188,19 @@
 </form>
 
 
-@elseif($stageNum === 3)
-{{-- ====================================================
-     TAHAP 3: JAM KE-4
-     ==================================================== --}}
-<div class="stage-instruction">
-  <div class="instruction-icon">🕓</div>
-  <div class="instruction-text">
-    <strong>Waktunya pengamatan pertama!</strong> Buka wadah sedikit, ambil 1 sendok sampel yogurt,
-    lalu segera tutup kembali wadah utama rapat-rapat. Amati perubahan warna, aroma, rasa dan tekstur
-    hanya pada sampel di sendok tersebut. Catat hasilnya.
-  </div>
-</div>
-<div class="attention-box warning">
-  ❗ <strong>PENTING:</strong> Khusus uji rasa, cukup cicipi sedikit saja di ujung lidah untuk merasakan keasaman,
-  <strong>JANGAN DITELAN</strong> demi keamanan pencernaan karena fermentasi belum selesai!
-</div>
-<form method="POST" action="{{ route('student.stage.save', 3) }}" class="stage-form" enctype="multipart/form-data">
-  @csrf
-  @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-4', 'stageNum'=>3])
-  @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
-  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengamatan Jam ke-4 ↗</button></div>
-</form>
-
 
 @elseif($stageNum === 4)
 {{-- ====================================================
      TAHAP 4: JAM KE-8
      ==================================================== --}}
+
 <div class="stage-instruction">
   <div class="instruction-icon">🕗</div>
   <div class="instruction-text">
-    <strong>Pengamatan kedua!</strong> Gunakan metode 1 sendok sampel seperti sebelumnya dan segera tutup kembali wadah utamamu.
-    Perhatikan apakah mulai terbentuk <em>lapisan whey</em> (cairan bening) di permukaan.
-    Catat seluruh perubahan organoleptik yang kamu amati.
+    <strong>Waktunya pengamatan pertama!</strong> Setelah melewati <strong>8 jam</strong> masa inkubasi yang tenang, buka wadah sedikit dan ambil 1 sendok sampel yogurt dengan cara steril, lalu segera tutup kembali wadah utama.
+    Amati apakah mulai terbentuk <em>lapisan whey</em> (cairan bening) di permukaan, dan catat perubahan organoleptik pada sampel tersebut (warna, aroma, rasa, tekstur).
   </div>
 </div>
-
-@php $s3Data = $stagesData[3]['data'] ?? null; @endphp
-@if($s3Data)
-<div class="comparison-card">
-  <h4>📈 Referensi Pengamatan Jam ke-4</h4>
-  <div class="comparison-grid">
-    <div class="comparison-item"><span class="cmp-label">Warna</span><span class="cmp-value">{{ $s3Data['warna'] }} — {{ $s3Data['warna_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
-    <div class="comparison-item"><span class="cmp-label">Aroma</span><span class="cmp-value">{{ $s3Data['aroma'] }} — {{ $s3Data['aroma_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
-    <div class="comparison-item"><span class="cmp-label">Tekstur</span><span class="cmp-value">{{ $s3Data['tekstur'] }} — {{ $s3Data['tekstur_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
-    <div class="comparison-item"><span class="cmp-label">Rasa</span><span class="cmp-value">{{ $s3Data['rasa'] }} — {{ $s3Data['rasa_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
-  </div>
-</div>
-@endif
 
 <form method="POST" action="{{ route('student.stage.save', 4) }}" class="stage-form" enctype="multipart/form-data">
   @csrf
@@ -280,7 +244,7 @@
     <h3>📝 Kesimpulan Awal</h3>
     <div class="form-group">
       <label>Menurut kelompokmu, apakah yogurt berhasil terbentuk? Mengapa?</label>
-      <textarea name="kesimpulan_awal" rows="5" placeholder="Berdasarkan pengamatan kami, yogurt..."></textarea>
+      <textarea name="kesimpulan_awal" rows="5" placeholder="Berdasarkan pengamatan kami, yogurt..." required></textarea>
     </div>
   </div>
 
