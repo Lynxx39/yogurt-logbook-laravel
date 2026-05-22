@@ -189,10 +189,10 @@
 
 
 
-@elseif($stageNum === 4)
+@elseif($stageNum === 3)
 {{-- ====================================================
-     TAHAP 4: JAM KE-8
-     ==================================================== --}}
+  TAHAP 3: JAM KE-8
+  ==================================================== --}}
 
 <div class="stage-instruction">
   <div class="instruction-icon">🕗</div>
@@ -202,17 +202,17 @@
   </div>
 </div>
 
-<form method="POST" action="{{ route('student.stage.save', 4) }}" class="stage-form" enctype="multipart/form-data">
+<form method="POST" action="{{ route('student.stage.save', 3) }}" class="stage-form" enctype="multipart/form-data">
   @csrf
-  @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-8', 'stageNum'=>4])
+  @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-8', 'stageNum'=>3])
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
   <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengamatan Jam ke-8 ↗</button></div>
 </form>
 
 
-@elseif($stageNum === 5)
+@elseif($stageNum === 4)
 {{-- ====================================================
-     TAHAP 5: PENGAMATAN FINAL JAM KE-12
+     TAHAP 4: PENGAMATAN FINAL JAM KE-12
      ==================================================== --}}
 <div class="stage-instruction">
   <div class="instruction-icon">⏱️</div>
@@ -222,9 +222,9 @@
   </div>
 </div>
 
-<form method="POST" action="{{ route('student.stage.save', 5) }}" class="stage-form" enctype="multipart/form-data">
+<form method="POST" action="{{ route('student.stage.save', 4) }}" class="stage-form" enctype="multipart/form-data">
   @csrf
-  @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-12 (Final)', 'stageNum'=>5])
+  @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-12 (Final)', 'stageNum'=>4])
 
   <div class="form-section">
     <h3>🧪 Pengukuran pH Akhir <span class="required-badge">WAJIB</span></h3>

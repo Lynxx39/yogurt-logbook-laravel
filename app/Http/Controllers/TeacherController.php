@@ -23,7 +23,7 @@ class TeacherController extends Controller
         $studentData = $students->map(function ($student) use (&$stats) {
             $logbook    = $student->logbook;
             $stagesData = $this->buildStagesData($logbook);
-            $done       = count($stagesData);
+            $done       = EvaluatorService::completedStageCount($stagesData);
             $evaluation = $this->evaluator->evaluateFromStages($stagesData);
             $total = count($this->evaluator->stagesDef());
             if ($done >= $total) $stats['selesai']++;
@@ -51,7 +51,7 @@ class TeacherController extends Controller
         $stagesData = $this->buildStagesData($logbook);
         $evaluation = $this->evaluator->evaluateFromStages($stagesData);
         $total = count($this->evaluator->stagesDef());
-        $rekap      = (count($stagesData) >= $total) ? $this->evaluator->buildRekapitulasi($stagesData) : null;
+        $rekap      = (EvaluatorService::completedStageCount($stagesData) >= $total) ? $this->evaluator->buildRekapitulasi($stagesData) : null;
 
         return view('teacher.student-detail', compact('student', 'logbook', 'stagesData', 'evaluation', 'rekap'));
     }
