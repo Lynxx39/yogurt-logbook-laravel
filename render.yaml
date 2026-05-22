@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: yogurt-logbook-laravel
+    env: docker
+    plan: starter
+    autoDeploy: true
