@@ -9,12 +9,12 @@ class EvaluatorService
     public static function stagesDef(): array
     {
         return [
-            1 => ['title' => 'Formulation Stage',              'icon' => '📋', 'color' => '#7C6FFF', 'editable' => true],
-            2 => ['title' => 'Production Day',                 'icon' => '🧪', 'color' => '#00A8FF', 'editable' => false],
-            3 => ['title' => 'Pengamatan Jam ke-4',            'icon' => '🕓', 'color' => '#FF9500', 'editable' => false],
+            1 => ['title' => 'Formulation Stage',              'icon' => '🧾', 'color' => '#7C6FFF', 'editable' => true],
+            2 => ['title' => 'Production Day',                 'icon' => '⚗️', 'color' => '#00A8FF', 'editable' => false],
+            3 => ['title' => 'Pengamatan Jam ke-4',            'icon' => '🕒', 'color' => '#FF9500', 'editable' => false],
             4 => ['title' => 'Pengamatan Jam ke-8',            'icon' => '🕗', 'color' => '#FF6B6B', 'editable' => false],
-            5 => ['title' => 'Pengamatan Final (Jam ke-12)',   'icon' => '⏰', 'color' => '#00C896', 'editable' => false],
-            6 => ['title' => 'Lab Report & Feedback',          'icon' => '📊', 'color' => '#F5C842', 'editable' => false],
+            5 => ['title' => 'Pengamatan Final (Jam ke-12)',   'icon' => '⏱️', 'color' => '#00C896', 'editable' => false],
+            6 => ['title' => 'Lab Report & Feedback',          'icon' => '📈', 'color' => '#F5C842', 'editable' => false],
         ];
     }
 
@@ -265,7 +265,7 @@ class EvaluatorService
     public static function normalLabel(?bool $normal): string
     {
         if ($normal === null) return '-';
-        return $normal ? '✅ Normal' : '❌ Tidak Normal';
+        return $normal ? '✔️ Normal' : '✖️ Tidak Normal';
     }
 
     public static function normalClass(?bool $normal): string

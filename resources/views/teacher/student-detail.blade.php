@@ -12,9 +12,9 @@ $s1 = $stagesData[1]['data'] ?? null;
 <div class="dashboard teacher-dashboard">
   <header class="teacher-header">
     <div class="teacher-header-left">
-      <a href="{{ route('teacher.dashboard') }}" class="btn btn-ghost">← Kembali</a>
+      <a href="{{ route('teacher.dashboard') }}" class="btn btn-ghost">↩ Kembali</a>
       <div>
-        <h1>📋 Logbook — {{ $s1['kelompok'] ?? $student->name }}</h1>
+        <h1>🧾 Logbook — {{ $s1['kelompok'] ?? $student->name }}</h1>
         <p>
           {{ $student->name }} &nbsp;•&nbsp;
           {{ $s1['ekstrak'] ?? '' }} &nbsp;•&nbsp;
@@ -41,7 +41,7 @@ $s1 = $stagesData[1]['data'] ?? null;
   @if($rekap)
   <div class="rekap-section" style="margin:0 32px 24px">
     <div class="rekap-header">
-      <h2>📊 Tabel Rekapitulasi Pengamatan</h2>
+      <h2>📈 Tabel Rekapitulasi Pengamatan</h2>
     </div>
     <div class="rekap-table-wrap">
       <table class="rekap-table">
@@ -99,7 +99,7 @@ $s1 = $stagesData[1]['data'] ?? null;
       <div class="stage-card {{ $hasData ? 'filled' : 'empty' }}">
         <div class="stage-card-header" style="--stage-color:{{ $def['color'] }}"
              onclick="toggleCard({{ $num }})" role="button">
-          <span class="stage-card-icon">{{ $hasData ? '✅' : $def['icon'] }}</span>
+          <span class="stage-card-icon">{{ $hasData ? '✔️' : $def['icon'] }}</span>
           <div class="stage-card-meta">
             <div class="stage-card-title">Tahap {{ $num }}: {{ $def['title'] }}</div>
             <div class="stage-card-sub">

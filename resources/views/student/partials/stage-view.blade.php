@@ -3,8 +3,8 @@
 @if($stageNum === 1)
   <div class="view-section">
     <div class="info-grid">
-      <div class="info-item"><span class="info-label">👥 Nama Kelompok</span><span class="info-value">{{ $data['kelompok'] }}</span></div>
-      <div class="info-item"><span class="info-label">🌿 Jenis Ekstrak</span><span class="info-value">{{ $data['ekstrak'] }}</span></div>
+      <div class="info-item"><span class="info-label">🧑‍🤝‍🧑 Nama Kelompok</span><span class="info-value">{{ $data['kelompok'] }}</span></div>
+      <div class="info-item"><span class="info-label">🧪 Jenis Ekstrak</span><span class="info-value">{{ $data['ekstrak'] }}</span></div>
       <div class="info-item full-width"><span class="info-label">👤 Anggota Kelompok</span><span class="info-value" style="white-space:pre-line">{{ $data['anggota'] }}</span></div>
       <div class="info-item full-width"><span class="info-label">⚗️ Komposisi Bahan</span><span class="info-value" style="white-space:pre-line">{{ $data['komposisi'] }}</span></div>
       <div class="info-item"><span class="info-label">⏱️ Durasi Fermentasi</span><span class="info-value">{{ $data['durasi'] ?? '12 jam' }}</span></div>
@@ -14,12 +14,12 @@
     @endif
     @if(!empty($data['foto_bahan']))
       <div class="view-photo-wrap">
-        <h4>📸 Foto Bahan</h4>
+        <h4>🖼️ Foto Bahan</h4>
         <img src="{{ Storage::url($data['foto_bahan']) }}" class="view-photo" alt="Foto bahan kelompok">
       </div>
     @else
       <div class="view-photo-missing">
-        <h4>📸 Foto Bahan</h4>
+        <h4>🖼️ Foto Bahan</h4>
         <div class="missing-box">— Foto tidak tersedia. Mohon minta siswa mengunggah ulang atau periksa entri data.</div>
       </div>
     @endif
@@ -91,7 +91,7 @@
           <span class="organo-param">🧪 pH Akhir</span>
           <span class="organo-desc-val"><span class="ph-badge">{{ $data['ph_akhir'] }}</span></span>
           <span class="organo-status {{ ($data['ph_akhir'] >= 3.8 && $data['ph_akhir'] <= 4.5) ? 'status-normal' : 'status-abnormal' }}">
-            {{ ($data['ph_akhir'] >= 3.8 && $data['ph_akhir'] <= 4.5) ? '✅ Normal (3,8–4,5)' : '❌ Di luar rentang' }}
+            {{ ($data['ph_akhir'] >= 3.8 && $data['ph_akhir'] <= 4.5) ? '✔️ Normal (3,8–4,5)' : '✖️ Di luar rentang' }}
           </span>
         </div>
       @endif
@@ -108,4 +108,4 @@
   </div>
 @endif
 
-<div class="stage-completed-note">✅ Disubmit pada {{ \Carbon\Carbon::parse($submittedAt)->format('d M Y, H:i') }}</div>
+<div class="stage-completed-note">✔️ Disubmit pada {{ \Carbon\Carbon::parse($submittedAt)->format('d M Y, H:i') }}</div>

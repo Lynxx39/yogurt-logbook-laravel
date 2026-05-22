@@ -1,7 +1,7 @@
 @php $ok = $evaluation['result'] === 'berhasil'; @endphp
 <div class="evaluation-card {{ $ok ? 'eval-success' : 'eval-fail' }}">
   <div class="eval-header">
-    <div class="eval-emoji">{{ $ok ? '🏆' : '📋' }}</div>
+    <div class="eval-emoji">{{ $ok ? '🚀' : '🧪' }}</div>
     <div>
       <div class="eval-title">
         @if($ok) Fermentasi Yogurt Kelompokmu <span style="text-decoration:underline">BERHASIL!</span>
@@ -19,7 +19,7 @@
   <div class="eval-indicators">
     @foreach($evaluation['indicators'] as $ind)
     <div class="indicator-row {{ $ind['passed'] ? 'passed' : 'failed' }}">
-      <span class="ind-check">{{ $ind['passed'] ? '✅' : '❌' }}</span>
+      <span class="ind-check">{{ $ind['passed'] ? '✔️' : '✖️' }}</span>
       <div class="ind-content">
         <span class="ind-label">{{ $ind['label'] }}</span>
         <span class="ind-actual">{{ $ind['actual'] }}</span>
@@ -31,7 +31,7 @@
 
   <div class="eval-verdict">
     @if($ok)
-      🎉 <strong>Selamat!</strong> Yogurt yang baik memiliki pH 3,8–4,5 dan tekstur semi-padat.
+      ✨ <strong>Selamat!</strong> Yogurt yang baik memiliki pH 3,8–4,5 dan tekstur semi-padat.
       Fermentasi laktat oleh bakteri <em>Lactobacillus</em> berjalan dengan baik!
     @else
       @php
@@ -45,7 +45,7 @@
           if (str_contains($f['label'], 'Warna')) $reasons[] = 'warna menunjukkan tanda kontaminasi';
         }
       @endphp
-      📌 Fermentasi belum optimal karena: <strong>{{ implode(', ', $reasons) }}</strong>.
+      ❖ Fermentasi belum optimal karena: <strong>{{ implode(', ', $reasons) }}</strong>.
       Kemungkinan penyebab: starter kurang aktif, suhu terlalu rendah, atau terjadi kontaminasi.
       Analisis lebih lanjut di tahap evaluasi poster!
     @endif

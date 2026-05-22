@@ -17,11 +17,11 @@
         <div class="radio-group grid-2">
           <label class="radio-card normal-card">
             <input type="radio" name="warna_normal" value="1" required>
-            <div class="radio-content"><span class="radio-icon">✅</span><span>Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✔️</span><span>Normal</span></div>
           </label>
           <label class="radio-card abnormal-card">
             <input type="radio" name="warna_normal" value="0">
-            <div class="radio-content"><span class="radio-icon">❌</span><span>Tidak Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✖️</span><span>Tidak Normal</span></div>
           </label>
         </div>
       </div>
@@ -42,11 +42,11 @@
         <div class="radio-group grid-2">
           <label class="radio-card normal-card">
             <input type="radio" name="aroma_normal" value="1" required>
-            <div class="radio-content"><span class="radio-icon">✅</span><span>Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✔️</span><span>Normal</span></div>
           </label>
           <label class="radio-card abnormal-card">
             <input type="radio" name="aroma_normal" value="0">
-            <div class="radio-content"><span class="radio-icon">❌</span><span>Tidak Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✖️</span><span>Tidak Normal</span></div>
           </label>
         </div>
       </div>
@@ -62,12 +62,12 @@
         <label>Pilih Tekstur yang Diamati</label>
         <select name="tekstur" required>
           <option value="">— Pilih Tekstur —</option>
-          <optgroup label="✅ Normal">
+          <optgroup label="✔️ Normal">
             <option value="Kental">Kental</option>
             <option value="Sangat Kental">Sangat Kental</option>
             <option value="Semi-padat">Semi-padat</option>
           </optgroup>
-          <optgroup label="❌ Tidak Normal">
+          <optgroup label="✖️ Tidak Normal">
             <option value="Cair (Encer/Gagal memadat)">Cair (Encer/Gagal memadat)</option>
           </optgroup>
         </select>
@@ -77,11 +77,11 @@
         <div class="radio-group grid-2">
           <label class="radio-card normal-card">
             <input type="radio" name="tekstur_normal" value="1" required>
-            <div class="radio-content"><span class="radio-icon">✅</span><span>Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✔️</span><span>Normal</span></div>
           </label>
           <label class="radio-card abnormal-card">
             <input type="radio" name="tekstur_normal" value="0">
-            <div class="radio-content"><span class="radio-icon">❌</span><span>Tidak Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✖️</span><span>Tidak Normal</span></div>
           </label>
         </div>
       </div>
@@ -102,11 +102,11 @@
         <div class="radio-group grid-2">
           <label class="radio-card normal-card">
             <input type="radio" name="rasa_normal" value="1" required>
-            <div class="radio-content"><span class="radio-icon">✅</span><span>Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✔️</span><span>Normal</span></div>
           </label>
           <label class="radio-card abnormal-card">
             <input type="radio" name="rasa_normal" value="0">
-            <div class="radio-content"><span class="radio-icon">❌</span><span>Tidak Normal</span></div>
+            <div class="radio-content"><span class="radio-icon">✖️</span><span>Tidak Normal</span></div>
           </label>
         </div>
       </div>
@@ -121,7 +121,7 @@
     <div class="form-group">
       <label>📸 Foto Kondisi Yogurt {{ $jamLabel }}</label>
       <div class="photo-upload-area-sm" onclick="document.getElementById('organo-foto-{{ $stageNum }}').click()">
-        <span class="photo-upload-icon" style="font-size:24px">📷</span>
+        <span class="photo-upload-icon" style="font-size:24px">🖼️</span>
         <p>Klik untuk pilih foto</p>
         <input type="file" id="organo-foto-{{ $stageNum }}" name="foto" accept="image/*" style="display:none"
                onchange="prevPhoto(this,'organo-prev-{{ $stageNum }}')">

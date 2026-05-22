@@ -11,7 +11,7 @@
   @if($rekap)
   <div class="rekap-section">
     <div class="rekap-header">
-      <h2>📊 Tabel Rekapitulasi Logbook Kelompok</h2>
+      <h2>📈 Tabel Rekapitulasi Logbook Kelompok</h2>
       <p>Data lengkap seluruh pengamatan fermentasi yogurt</p>
     </div>
     <div class="rekap-table-wrap">
@@ -32,7 +32,7 @@
             <td class="td-waktu">
               <strong>{{ $row['label'] }}</strong>
               @if($row['waktu'] === 0)<div class="td-sub">Baseline</div>@endif
-              @if($row['waktu'] === 12)<div class="td-sub">⭐ Data Evaluasi</div>@endif
+              @if($row['waktu'] === 12)<div class="td-sub">✦ Data Evaluasi</div>@endif
             </td>
             <td>
               <div class="rekap-val">{{ $row['warna'] }}</div>
@@ -79,7 +79,7 @@
       </table>
     </div>
     <div class="rekap-hint">
-      💡 Gunakan tabel ini sebagai bahan referensi untuk membuat poster di Canva dan presentasi kelompok.
+      ✨ Gunakan tabel ini sebagai bahan referensi untuk membuat poster di Canva dan presentasi kelompok.
     </div>
   </div>
   @endif

@@ -77,18 +77,18 @@ class StudentController extends Controller
                 ['logbook_id' => $logbook->id, 'stage_number' => 6],
                 ['data' => ['auto' => true], 'submitted_at' => now()]
             );
-            return redirect('/student/stage/6')->with('success', '🎉 Pengamatan final tersimpan! Lihat laporan dan hasil evaluasi di bawah.');
+            return redirect('/student/stage/6')->with('success', '✨ Pengamatan final tersimpan! Lihat laporan dan hasil evaluasi di bawah.');
         }
 
         $messages = [
-            1 => '✅ Rencana proyek disimpan! Kamu bisa mengubahnya kapan saja.',
-            2 => '✅ Data Production Day tersimpan!',
-            3 => '✅ Pengamatan Jam ke-4 tersimpan!',
-            4 => '✅ Pengamatan Jam ke-8 tersimpan!',
+            1 => '✔️ Rencana proyek disimpan! Kamu bisa mengubahnya kapan saja.',
+            2 => '✔️ Data Production Day tersimpan!',
+            3 => '✔️ Pengamatan Jam ke-4 tersimpan!',
+            4 => '✔️ Pengamatan Jam ke-8 tersimpan!',
         ];
 
         $next = min($n + 1, 6);
-        return redirect("/student/stage/{$next}")->with('success', $messages[$n] ?? '✅ Tersimpan!');
+        return redirect("/student/stage/{$next}")->with('success', $messages[$n] ?? '✔️ Tersimpan!');
     }
 
     // -------------------------------------------------------

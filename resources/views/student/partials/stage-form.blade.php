@@ -6,7 +6,7 @@
      TAHAP 1: FORMULATION STAGE
      ==================================================== --}}
 <div class="stage-instruction">
-  <div class="instruction-icon">📋</div>
+  <div class="instruction-icon">🧾</div>
   <div class="instruction-text">
     <strong>Sebelum memulai pembuatan yogurt, lengkapi rencana proyek kalian terlebih dahulu!</strong>
     Tuliskan bahan-bahan yang akan digunakan, komposisi (takaran) masing-masing bahan, dan durasi fermentasi selama <strong>12 jam</strong>.
@@ -16,7 +16,7 @@
 <form method="POST" action="{{ route('student.stage.save', 1) }}" class="stage-form" data-stage="{{ $stageNum }}" enctype="multipart/form-data">
   @csrf
   <div class="form-section">
-    <h3>👥 Identitas Kelompok</h3>
+    <h3>🧑‍🤝‍🧑 Identitas Kelompok</h3>
     <div class="form-row">
       <div class="form-group">
         <label for="s1-kelompok">Nama Kelompok</label>
@@ -57,17 +57,17 @@
   </div>
 
   <div class="form-section">
-    <h3>📸 Foto Bahan-Bahan <span class="required-badge">WAJIB</span></h3>
+    <h3>🖼️ Foto Bahan-Bahan <span class="required-badge">WAJIB</span></h3>
     <p class="form-hint">Upload foto semua bahan yang sudah disiapkan.</p>
     @if(!empty($existing['foto_bahan']))
       <div class="current-photo-wrap">
-        <div class="current-photo-label">📷 Foto sebelumnya:</div>
+        <div class="current-photo-label">🖼️ Foto sebelumnya:</div>
         <img src="{{ Storage::url($existing['foto_bahan']) }}" class="view-photo" alt="Foto bahan sebelumnya">
         <p class="form-hint">Upload foto baru jika ingin mengganti.</p>
       </div>
     @endif
     <div class="photo-upload-area" onclick="document.getElementById('s1-foto').click()">
-      <div class="photo-upload-icon">📷</div>
+      <div class="photo-upload-icon">🖼️</div>
       <p>Klik untuk pilih foto bahan</p>
       <small>Format JPG/PNG, maksimal 5MB {{ empty($existing['foto_bahan']) ? '(Wajib)' : '(Opsional untuk update)' }}</small>
       <input type="file" id="s1-foto" name="foto_bahan" accept="image/*" style="display:none"
@@ -80,11 +80,11 @@
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">
-      {{ isset($stagesData[1]) ? '💾 Simpan Perubahan Rencana Proyek' : '💾 Simpan Rencana Proyek' }}
+      {{ isset($stagesData[1]) ? '🗂️ Simpan Perubahan Rencana Proyek' : '🗂️ Simpan Rencana Proyek' }}
     </button>
   </div>
   @if(isset($stagesData[1]))
-    <p class="form-hint" style="text-align:center;margin-top:12px">✏️ Tombol ini tidak permanen — kamu bisa mengubah rencana kapan saja.</p>
+    <p class="form-hint" style="text-align:center;margin-top:12px">✍️ Tombol ini tidak permanen — kamu bisa mengubah rencana kapan saja.</p>
   @endif
 </form>
 
@@ -101,7 +101,7 @@
   </div>
 </div>
 <div class="attention-box">
-  ⚠️ <strong>PERHATIAN:</strong> Simpan yogurt di <strong>suhu ruang (25–30°C)</strong>.
+  ❗ <strong>PERHATIAN:</strong> Simpan yogurt di <strong>suhu ruang (25–30°C)</strong>.
   Tempatkan di ruangan yang <strong>gelap</strong>, tidak terkena sinar matahari langsung.
   <strong>Hindari membuka tutup wadah terlalu sering.</strong> Amati setiap 4 jam sekali.
 </div>
@@ -172,7 +172,7 @@
     </div>
     <h4>📸 Foto Produk Sebelum Fermentasi <span class="required-badge">WAJIB</span></h4>
     <div class="photo-upload-area" onclick="document.getElementById('s2-foto').click()">
-      <div class="photo-upload-icon">📷</div>
+      <div class="photo-upload-icon">🖼️</div>
       <p>Klik untuk pilih foto kondisi awal yogurt</p>
       <small>JPG/PNG, maks. 5MB</small>
       <input type="file" id="s2-foto" name="jam0_foto" accept="image/*" style="display:none"
@@ -184,7 +184,7 @@
   </div>
 
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
-  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan & Lanjut ke Pengamatan →</button></div>
+  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan & Lanjut ke Pengamatan ↗</button></div>
 </form>
 
 
@@ -201,14 +201,14 @@
   </div>
 </div>
 <div class="attention-box warning">
-  ⚠️ <strong>PENTING:</strong> Khusus uji rasa, cukup cicipi sedikit saja di ujung lidah untuk merasakan keasaman,
+  ❗ <strong>PENTING:</strong> Khusus uji rasa, cukup cicipi sedikit saja di ujung lidah untuk merasakan keasaman,
   <strong>JANGAN DITELAN</strong> demi keamanan pencernaan karena fermentasi belum selesai!
 </div>
 <form method="POST" action="{{ route('student.stage.save', 3) }}" class="stage-form" enctype="multipart/form-data">
   @csrf
   @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-4', 'stageNum'=>3])
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
-  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengamatan Jam ke-4 →</button></div>
+  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengamatan Jam ke-4 ↗</button></div>
 </form>
 
 
@@ -228,12 +228,12 @@
 @php $s3Data = $stagesData[3]['data'] ?? null; @endphp
 @if($s3Data)
 <div class="comparison-card">
-  <h4>📊 Referensi Pengamatan Jam ke-4</h4>
+  <h4>📈 Referensi Pengamatan Jam ke-4</h4>
   <div class="comparison-grid">
-    <div class="comparison-item"><span class="cmp-label">Warna</span><span class="cmp-value">{{ $s3Data['warna'] }} — {{ $s3Data['warna_normal'] ? '✅ Normal' : '❌ Tdk Normal' }}</span></div>
-    <div class="comparison-item"><span class="cmp-label">Aroma</span><span class="cmp-value">{{ $s3Data['aroma'] }} — {{ $s3Data['aroma_normal'] ? '✅ Normal' : '❌ Tdk Normal' }}</span></div>
-    <div class="comparison-item"><span class="cmp-label">Tekstur</span><span class="cmp-value">{{ $s3Data['tekstur'] }} — {{ $s3Data['tekstur_normal'] ? '✅ Normal' : '❌ Tdk Normal' }}</span></div>
-    <div class="comparison-item"><span class="cmp-label">Rasa</span><span class="cmp-value">{{ $s3Data['rasa'] }} — {{ $s3Data['rasa_normal'] ? '✅ Normal' : '❌ Tdk Normal' }}</span></div>
+    <div class="comparison-item"><span class="cmp-label">Warna</span><span class="cmp-value">{{ $s3Data['warna'] }} — {{ $s3Data['warna_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
+    <div class="comparison-item"><span class="cmp-label">Aroma</span><span class="cmp-value">{{ $s3Data['aroma'] }} — {{ $s3Data['aroma_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
+    <div class="comparison-item"><span class="cmp-label">Tekstur</span><span class="cmp-value">{{ $s3Data['tekstur'] }} — {{ $s3Data['tekstur_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
+    <div class="comparison-item"><span class="cmp-label">Rasa</span><span class="cmp-value">{{ $s3Data['rasa'] }} — {{ $s3Data['rasa_normal'] ? '✔️ Normal' : '✖️ Tdk Normal' }}</span></div>
   </div>
 </div>
 @endif
@@ -242,7 +242,7 @@
   @csrf
   @include('student.partials.organo-fields', ['jamLabel'=>'Jam ke-8', 'stageNum'=>4])
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
-  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengamatan Jam ke-8 →</button></div>
+  <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengamatan Jam ke-8 ↗</button></div>
 </form>
 
 
@@ -251,7 +251,7 @@
      TAHAP 5: PENGAMATAN FINAL JAM KE-12
      ==================================================== --}}
 <div class="stage-instruction">
-  <div class="instruction-icon">⏰</div>
+  <div class="instruction-icon">⏱️</div>
   <div class="instruction-text">
     <strong>Ini adalah pengamatan terakhir!</strong> Yogurtmu sudah melewati <strong>12 jam fermentasi</strong>.
     Lakukan uji organoleptik lengkap, ukur pH akhir, dan tuliskan kesimpulan awalmu mengenai hasil fermentasi kelompokmu.
@@ -287,7 +287,7 @@
   @if($errors->any())<div class="form-error">{{ $errors->first() }}</div>@endif
   <div class="form-actions">
     <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#00C896,#7C6FFF);box-shadow:0 4px 20px rgba(124,111,255,0.35)">
-      🔬 Selesai &amp; Lihat Hasil
+      🧪 Selesai &amp; Lihat Hasil
     </button>
   </div>
 </form>

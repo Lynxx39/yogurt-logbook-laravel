@@ -14,7 +14,7 @@ $stageDef = $stagesDef[$activeStage];
   {{-- SIDEBAR --}}
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo"><span class="sidebar-logo-icon">🥛</span> YogurtTrack</div>
+      <div class="sidebar-logo"><span class="sidebar-logo-icon">🥣</span> YogurtTrack</div>
     </div>
     <div class="sidebar-user">
       <div class="user-avatar">{{ strtoupper(substr($user->name,0,1)) }}</div>
@@ -34,13 +34,13 @@ $stageDef = $stagesDef[$activeStage];
         <a href="{{ $isLocked ? '#' : route('student.stage', $num) }}"
            class="nav-item{{ $isActive?' active':'' }}{{ $isComplete?' complete':'' }}{{ $isLocked?' locked':'' }}"
            style="--stage-color:{{ $def['color'] }}">
-          <span class="nav-icon">{{ $isComplete ? '✅' : $def['icon'] }}</span>
+          <span class="nav-icon">{{ $isComplete ? '✔️' : $def['icon'] }}</span>
           <div class="nav-text">
             <span class="nav-label">Tahap {{ $num }}</span>
             <span class="nav-title">{{ $def['title'] }}</span>
           </div>
           @if($isLocked)<span class="nav-lock">🔒</span>
-          @elseif($isComplete && !empty($def['editable']))<span class="nav-check edit-badge">✏️</span>
+          @elseif($isComplete && !empty($def['editable']))<span class="nav-check edit-badge">✍️</span>
           @elseif($isComplete)<span class="nav-check">✓</span>
           @endif
         </a>
@@ -53,7 +53,7 @@ $stageDef = $stagesDef[$activeStage];
     </div>
     <div class="sidebar-bottom">
       <form method="POST" action="/logout">@csrf
-        <button type="submit" class="btn btn-ghost btn-logout">← Keluar</button>
+        <button type="submit" class="btn btn-ghost btn-logout">↩ Keluar</button>
       </form>
     </div>
   </aside>
@@ -74,12 +74,12 @@ $stageDef = $stagesDef[$activeStage];
       </div>
       @if(isset($stagesData[$activeStage]))
         @if(!empty($stageDef['editable']))
-          <span class="badge badge-info">✏️ Editable</span>
+          <span class="badge badge-info">✍️ Editable</span>
         @else
-          <span class="badge badge-success">✅ Selesai</span>
+          <span class="badge badge-success">✔️ Selesai</span>
         @endif
       @else
-        <span class="badge badge-pending">⏳ Belum Diisi</span>
+        <span class="badge badge-pending">⌛ Belum Diisi</span>
       @endif
     </div>
 
@@ -89,7 +89,7 @@ $stageDef = $stagesDef[$activeStage];
         @if(isset($stagesData[6]))
           @include('student.partials.lab-report', compact('stagesData','evaluation','rekap'))
         @else
-          <div class="info-banner">📊 Lab report akan muncul otomatis setelah kamu menyelesaikan Pengamatan Final (Jam ke-12).</div>
+          <div class="info-banner">📑 Lab report akan muncul otomatis setelah kamu menyelesaikan Pengamatan Final (Jam ke-12).</div>
         @endif
       @elseif(isset($stagesData[$activeStage]) && empty($stageDef['editable']))
         {{-- Read-only for non-editable completed stages --}}

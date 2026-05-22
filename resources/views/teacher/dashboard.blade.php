@@ -5,14 +5,14 @@
 <div class="dashboard teacher-dashboard">
   <header class="teacher-header">
     <div class="teacher-header-left">
-      <div class="sidebar-logo">🥛 YogurtTrack</div>
+      <div class="sidebar-logo">🥣 YogurtTrack</div>
       <div>
         <h1>Dashboard Pemantauan</h1>
         <p>Pantau aktivitas seluruh siswa secara real-time</p>
       </div>
     </div>
     <div class="teacher-user-info">
-      <div class="teacher-avatar">👩‍🏫</div>
+      <div class="teacher-avatar">🧑‍🏫</div>
       <div>
         <div class="teacher-name">{{ session('user')['name'] }}</div>
         <div class="teacher-role">Guru / Admin</div>
@@ -24,17 +24,17 @@
   </header>
 
   <div class="stats-grid">
-    <div class="stat-card s-total"><div class="stat-icon">👥</div><div class="stat-value">{{ $stats['total'] }}</div><div class="stat-label">Total Siswa</div></div>
-    <div class="stat-card s-done"><div class="stat-icon">✅</div><div class="stat-value">{{ $stats['selesai'] }}</div><div class="stat-label">Logbook Selesai</div></div>
-    <div class="stat-card s-success"><div class="stat-icon">🏆</div><div class="stat-value">{{ $stats['berhasil'] }}</div><div class="stat-label">Proyek Berhasil</div></div>
-    <div class="stat-card s-fail"><div class="stat-icon">⚠️</div><div class="stat-value">{{ $stats['kurang'] }}</div><div class="stat-label">Kurang Berhasil</div></div>
+    <div class="stat-card s-total"><div class="stat-icon">🧑‍🎓</div><div class="stat-value">{{ $stats['total'] }}</div><div class="stat-label">Total Siswa</div></div>
+    <div class="stat-card s-done"><div class="stat-icon">🗂️</div><div class="stat-value">{{ $stats['selesai'] }}</div><div class="stat-label">Logbook Selesai</div></div>
+    <div class="stat-card s-success"><div class="stat-icon">🚀</div><div class="stat-value">{{ $stats['berhasil'] }}</div><div class="stat-label">Proyek Berhasil</div></div>
+    <div class="stat-card s-fail"><div class="stat-icon">🧯</div><div class="stat-value">{{ $stats['kurang'] }}</div><div class="stat-label">Kurang Berhasil</div></div>
   </div>
 
   <div class="teacher-body">
     <div class="section-header">
       <h2>Daftar Siswa ({{ $stats['total'] }})</h2>
       <div class="filter-bar">
-        <input type="text" id="s-search" placeholder="🔍 Cari nama siswa..." oninput="filterStudents()">
+        <input type="text" id="s-search" placeholder="⌕ Cari nama siswa..." oninput="filterStudents()">
         <select id="s-filter" onchange="filterStudents()">
           <option value="">Semua Status</option>
           <option value="berhasil">Berhasil</option>
@@ -46,7 +46,7 @@
 
     @if($studentData->isEmpty())
       <div class="empty-state">
-        <div class="empty-icon">👥</div>
+        <div class="empty-icon">📭</div>
         <h3>Belum Ada Siswa Terdaftar</h3>
         <p>Siswa perlu mendaftar melalui halaman utama terlebih dahulu</p>
       </div>
@@ -61,10 +61,10 @@
             if ($ev) {
               if ($ev['result'] === 'berhasil') {
                 $statusData='berhasil'; $cardCls='card-success';
-                $badge='<span class="badge badge-success">🏆 Berhasil</span>';
+                $badge='<span class="badge badge-success">🚀 Berhasil</span>';
               } else {
                 $statusData='kurang_berhasil'; $cardCls='card-fail';
-                $badge='<span class="badge badge-warning">⚠️ Kurang Berhasil</span>';
+                $badge='<span class="badge badge-warning">🧯 Kurang Berhasil</span>';
               }
             }
           @endphp
@@ -79,7 +79,7 @@
                 <div class="student-name">{{ $sd['user']->name }}</div>
                 <div class="student-group">
                   @if($sd['kelompok'])
-                    🌿 {{ $sd['kelompok'] }}
+                    🧪 {{ $sd['kelompok'] }}
                   @else
                     {{ $sd['user']->group_name ?? 'Siswa' }}
                   @endif
@@ -99,7 +99,7 @@
             </div>
             <div class="student-card-footer">
               <span>Bergabung: {{ $sd['user']->created_at->format('d M Y') }}</span>
-              <span class="view-link">Lihat Detail →</span>
+              <span class="view-link">Lihat Detail ↗</span>
             </div>
           </div>
         @endforeach
