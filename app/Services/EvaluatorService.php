@@ -11,14 +11,19 @@ class EvaluatorService
         return [
             1 => ['title' => 'Formulation Stage',              'icon' => '🧾', 'color' => '#7C6FFF', 'editable' => true],
             2 => ['title' => 'Production Day',                 'icon' => '⚗️', 'color' => '#00A8FF', 'editable' => false],
-            4 => ['title' => 'Pengamatan Jam ke-8',            'icon' => '🕗', 'color' => '#FF6B6B', 'editable' => false],
-            5 => ['title' => 'Pengamatan Final (Jam ke-12)',   'icon' => '⏱️', 'color' => '#00C896', 'editable' => false],
-            6 => ['title' => 'Lab Report & Feedback',          'icon' => '📈', 'color' => '#F5C842', 'editable' => false],
+            3 => ['title' => 'Pengamatan Jam ke-8',            'icon' => '🕗', 'color' => '#FF6B6B', 'editable' => false],
+            4 => ['title' => 'Pengamatan Final (Jam ke-12)',   'icon' => '⏱️', 'color' => '#00C896', 'editable' => false],
+            5 => ['title' => 'Lab Report & Feedback',          'icon' => '📈', 'color' => '#F5C842', 'editable' => false],
         ];
     }
 
+    public static function completedStageCount(array $stagesData): int
+    {
+        return count(array_intersect_key($stagesData, array_flip(array_keys(self::stagesDef()))));
+    }
+
     // -------------------------------------------------------
-    // Evaluate from stage 5 (Jam ke-12) data
+    // Evaluate from stage 4 (Jam ke-12) data
     // -------------------------------------------------------
     public function evaluate(?array $s5Data, ?string $ekstrakText = null): ?array
     {
@@ -96,10 +101,10 @@ class EvaluatorService
         ];
     }
 
-    // Evaluate from full stages data: consider jam0/jam4/jam8/jam12 coloration
+    // Evaluate from full stages data: consider jam0/jam8/jam12 coloration
     public function evaluateFromStages(array $stagesData): ?array
     {
-        $s5 = $stagesData[5]['data'] ?? null;
+        $s5 = $stagesData[4]['data'] ?? null;
         $ekstrak = strtolower(trim((string)($stagesData[1]['data']['ekstrak'] ?? '')));
         $base = $this->evaluate($s5, $ekstrak);
         if (!$base) return null;
@@ -122,12 +127,13 @@ class EvaluatorService
         $suspectFound = false;
         $suspectPoints = [];
 
-        // check jam0 (stage 2)
+        // check jam0 (stage 2) and intermediate observations
         $j0 = $stagesData[2]['data']['jam0']['warna'] ?? null;
-        $checks = [ ['label' => 'Jam ke-0', 'warna' => $j0],
-                ['label' => 'Jam ke-8', 'warna' => $stagesData[4]['data']['warna'] ?? null],
+            $checks = [
+                ['label' => 'Jam ke-0', 'warna' => $j0],
+                ['label' => 'Jam ke-8', 'warna' => $stagesData[3]['data']['warna'] ?? null],
                 ['label' => 'Jam ke-12', 'warna' => $s5['warna'] ?? null],
-        ];
+            ];
 
         foreach ($checks as $c) {
             $w = strtolower(trim((string)($c['warna'] ?? '')));
@@ -188,11 +194,29 @@ class EvaluatorService
         ];
 
 
-        // Jam ke-8 (stage 4)
-        $s4 = $stagesData[4]['data'] ?? null;
+        // Jam ke-8 (stage 3)
+        $s3 = $stagesData[3]['data'] ?? null;
         $rows[] = [
             'label'         => 'Jam ke-8',
             'waktu'         => 8,
+            'warna'         => $s3['warna'] ?? '-',
+            'warna_normal'  => $this->resolveWarnaNormal($s3['warna'] ?? null, isset($s3['warna_normal']) ? (bool)$s3['warna_normal'] : null, $ekstrak),
+            'aroma'         => $s3['aroma'] ?? '-',
+            'aroma_normal'  => $this->resolveAromaNormal($s3['aroma'] ?? null, isset($s3['aroma_normal']) ? (bool)$s3['aroma_normal'] : null),
+            'rasa'          => $s3['rasa'] ?? '-',
+            'rasa_normal'   => $this->resolveRasaNormal($s3['rasa'] ?? null, isset($s3['rasa_normal']) ? (bool)$s3['rasa_normal'] : null),
+            'tekstur'       => $s3['tekstur'] ?? '-',
+            'tekstur_normal'=> $this->resolveTeksturNormal($s3['tekstur'] ?? null, isset($s3['tekstur_normal']) ? (bool)$s3['tekstur_normal'] : null),
+            'ph'            => null,
+            'catatan'       => $s3['catatan'] ?? '',
+            'foto'          => $s3['foto'] ?? null,
+        ];
+
+        // Jam ke-12 (stage 4)
+        $s4 = $stagesData[4]['data'] ?? null;
+        $rows[] = [
+            'label'         => 'Jam ke-12 (Final)',
+            'waktu'         => 12,
             'warna'         => $s4['warna'] ?? '-',
             'warna_normal'  => $this->resolveWarnaNormal($s4['warna'] ?? null, isset($s4['warna_normal']) ? (bool)$s4['warna_normal'] : null, $ekstrak),
             'aroma'         => $s4['aroma'] ?? '-',
@@ -201,27 +225,9 @@ class EvaluatorService
             'rasa_normal'   => $this->resolveRasaNormal($s4['rasa'] ?? null, isset($s4['rasa_normal']) ? (bool)$s4['rasa_normal'] : null),
             'tekstur'       => $s4['tekstur'] ?? '-',
             'tekstur_normal'=> $this->resolveTeksturNormal($s4['tekstur'] ?? null, isset($s4['tekstur_normal']) ? (bool)$s4['tekstur_normal'] : null),
-            'ph'            => null,
+            'ph'            => $s4['ph_akhir'] ?? null,
             'catatan'       => $s4['catatan'] ?? '',
             'foto'          => $s4['foto'] ?? null,
-        ];
-
-        // Jam ke-12 (stage 5)
-        $s5 = $stagesData[5]['data'] ?? null;
-        $rows[] = [
-            'label'         => 'Jam ke-12 (Final)',
-            'waktu'         => 12,
-            'warna'         => $s5['warna'] ?? '-',
-            'warna_normal'  => $this->resolveWarnaNormal($s5['warna'] ?? null, isset($s5['warna_normal']) ? (bool)$s5['warna_normal'] : null, $ekstrak),
-            'aroma'         => $s5['aroma'] ?? '-',
-            'aroma_normal'  => $this->resolveAromaNormal($s5['aroma'] ?? null, isset($s5['aroma_normal']) ? (bool)$s5['aroma_normal'] : null),
-            'rasa'          => $s5['rasa'] ?? '-',
-            'rasa_normal'   => $this->resolveRasaNormal($s5['rasa'] ?? null, isset($s5['rasa_normal']) ? (bool)$s5['rasa_normal'] : null),
-            'tekstur'       => $s5['tekstur'] ?? '-',
-            'tekstur_normal'=> $this->resolveTeksturNormal($s5['tekstur'] ?? null, isset($s5['tekstur_normal']) ? (bool)$s5['tekstur_normal'] : null),
-            'ph'            => $s5['ph_akhir'] ?? null,
-            'catatan'       => $s5['catatan'] ?? '',
-            'foto'          => $s5['foto'] ?? null,
         ];
 
         return $rows;
@@ -316,8 +322,9 @@ class EvaluatorService
             return false;
         }
 
-        // Domain guard: dark tones can still be normal for some extracts (e.g. buah naga / blueberry / blackcurrant).
-        if ($this->isDarkColorNormalByExtract($value, $ekstrak)) {
+        // Domain guard: some extracts have characteristic colors that should be
+        // considered normal (e.g. stroberi -> pink, buah naga/blueberry -> ungu).
+        if ($this->isColorNormalForExtract($value, $ekstrak)) {
             return true;
         }
 
@@ -329,7 +336,28 @@ class EvaluatorService
         $darkFriendlyExtract = $this->containsAny($ekstrakValue, ['buah naga', 'blueberry', 'blackcurrant', 'anggur', 'ubi ungu']);
         if (!$darkFriendlyExtract) return false;
 
-        return $this->containsAny($warnaValue, ['ungu tua', 'ungu gelap', 'keunguan']);
+        return $this->containsAny($warnaValue, ['ungu tua', 'ungu gelap', 'keunguan', 'ungu']);
+    }
+
+    /**
+     * Determine whether a given color value is considered normal for a specific extract.
+     * This covers both dark-friendly extracts and light/pink-friendly extracts (e.g. stroberi).
+     */
+    private function isColorNormalForExtract(string $warnaValue, string $ekstrakValue): bool
+    {
+        // Strawberry / stroberi -> expect pink / merah muda variants
+        if ($this->containsAny($ekstrakValue, ['stroberi', 'strawberry'])) {
+            if ($this->containsAny($warnaValue, ['pink', 'pink cerah', 'merah muda', 'merah muda cerah', 'pucat'])) {
+                return true;
+            }
+        }
+
+        // Fallback: dark-friendly extracts
+        if ($this->isDarkColorNormalByExtract($warnaValue, $ekstrakValue)) {
+            return true;
+        }
+
+        return false;
     }
 
     private function buildWarnaActual(?string $warnaText, ?string $ekstrakText = null): string

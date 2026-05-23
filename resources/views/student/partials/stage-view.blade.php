@@ -58,9 +58,9 @@
     @endif
   </div>
 
-@elseif(in_array($stageNum, [4, 5]))
+@elseif(in_array($stageNum, [3, 4]))
   @php
-    $labels = [4 => 'Jam ke-8', 5 => 'Jam ke-12 (Final)'];
+    $labels = [3 => 'Jam ke-8', 4 => 'Jam ke-12 (Final)'];
     $label = $labels[$stageNum] ?? 'Pengamatan';
   @endphp
   <div class="view-section">
@@ -86,7 +86,7 @@
         <span class="organo-desc-val">{{ $data['rasa'] }}</span>
         <span class="organo-status {{ EvaluatorService::normalClass($data['rasa_normal']) }}">{{ EvaluatorService::normalLabel($data['rasa_normal']) }}</span>
       </div>
-      @if($stageNum === 5 && isset($data['ph_akhir']))
+      @if($stageNum === 4 && isset($data['ph_akhir']))
         <div class="organo-row">
           <span class="organo-param">🧪 pH Akhir</span>
           <span class="organo-desc-val"><span class="ph-badge">{{ $data['ph_akhir'] }}</span></span>
@@ -102,7 +102,7 @@
     @else
       <div class="view-photo-missing"><div class="missing-box">Foto pengamatan {{ $label }} tidak tersedia.</div></div>
     @endif
-    @if($stageNum === 5 && !empty($data['kesimpulan_awal']))
+    @if($stageNum === 4 && !empty($data['kesimpulan_awal']))
       <div class="view-note"><strong>📝 Kesimpulan Awal:</strong><br>{{ $data['kesimpulan_awal'] }}</div>
     @endif
   </div>

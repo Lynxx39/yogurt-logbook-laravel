@@ -5,7 +5,7 @@
 use App\Services\EvaluatorService;
 $stagesDef = EvaluatorService::stagesDef();
 $total = count($stagesDef);
-$done = count($stagesData);
+$done = EvaluatorService::completedStageCount($stagesData);
 $pct  = round($done / ($total ?: 1) * 100);
 $stageDef = $stagesDef[$activeStage];
 @endphp

@@ -1,4 +1,4 @@
-{{-- Lab Report auto-generated (Stage 6) --}}
+{{-- Lab Report auto-generated (Stage 5) --}}
 @php use App\Services\EvaluatorService; @endphp
 
 <div class="lab-report">
@@ -85,11 +85,11 @@
   @endif
 
   {{-- KESIMPULAN AWAL SISWA --}}
-  @php $s5Data = $stagesData[5]['data'] ?? null; @endphp
-  @if(!empty($s5Data['kesimpulan_awal']))
+  @php $finalData = $stagesData[4]['data'] ?? null; @endphp
+  @if(!empty($finalData['kesimpulan_awal']))
   <div class="student-conclusion">
     <h3>📝 Kesimpulan Awal Kelompok</h3>
-    <div class="conclusion-text">{{ $s5Data['kesimpulan_awal'] }}</div>
+    <div class="conclusion-text">{{ $finalData['kesimpulan_awal'] }}</div>
   </div>
   @endif
 </div>
