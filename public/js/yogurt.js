@@ -24,10 +24,13 @@ function syncThemeToggleUI(theme) {
   if (!btn || !icon || !text) return;
 
   const isDark = theme === 'dark';
-  icon.textContent = isDark ? '◐' : '◑';
+  icon.innerHTML = isDark ? '<i data-lucide="moon" style="width:14px;height:14px;transition:transform 0.3s ease;"></i>' : '<i data-lucide="sun" style="width:14px;height:14px;transition:transform 0.3s ease;"></i>';
   text.textContent = isDark ? 'Dark' : 'Light';
   btn.setAttribute('aria-label', isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap');
   btn.setAttribute('title', isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap');
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
 }
 
 function initThemeToggle() {
@@ -63,9 +66,12 @@ function togglePw(id) {
   const isPassword = el.type === 'password';
   el.type = isPassword ? 'text' : 'password';
   if (button) {
-    button.textContent = isPassword ? '🙈' : '👁';
+    button.innerHTML = isPassword ? '<i data-lucide="eye-off" style="width:18px;height:18px;"></i>' : '<i data-lucide="eye" style="width:18px;height:18px;"></i>';
     button.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
     button.setAttribute('title', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
   }
 }
 
@@ -83,8 +89,11 @@ function prevPhoto(input, previewId) {
     const prev = document.getElementById(previewId);
     if (!prev) return;
     prev.innerHTML = `<img src="${e.target.result}" alt="Preview foto">
-      <button type="button" class="photo-remove-btn" onclick="rmPhoto('${input.id}','${previewId}')">✖ Hapus Foto</button>`;
+      <button type="button" class="photo-remove-btn" onclick="rmPhoto('${input.id}','${previewId}')"><i data-lucide="trash-2" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;"></i> Hapus Foto</button>`;
     prev.classList.remove('hidden');
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
   };
   reader.readAsDataURL(file);
 }
@@ -107,9 +116,12 @@ function addBahan() {
     <input type="text" name="bahan_nama[]" placeholder="Nama bahan" class="bahan-nama" required>
     <input type="text" name="bahan_jumlah[]" placeholder="Jumlah" class="bahan-jumlah" required>
     <input type="text" name="bahan_satuan[]" placeholder="Satuan" class="bahan-satuan">
-    <button type="button" class="btn-icon-remove" onclick="this.parentElement.remove()" title="Hapus">✖</button>`;
+    <button type="button" class="btn-icon-remove" onclick="this.parentElement.remove()" title="Hapus"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>`;
   list.appendChild(div);
   bahanCount++;
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
 }
 
 // ---- Dynamic langkah rows ----
@@ -123,9 +135,12 @@ function addLangkah() {
   div.innerHTML = `
     <span class="langkah-num">${langkahCount + 1}</span>
     <textarea name="langkah[]" class="langkah-text" rows="2" placeholder="Langkah ke-${langkahCount + 1}..." required></textarea>
-    <button type="button" class="btn-icon-remove" onclick="this.parentElement.remove();refreshNums()" title="Hapus">✖</button>`;
+    <button type="button" class="btn-icon-remove" onclick="this.parentElement.remove();refreshNums()" title="Hapus"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>`;
   list.appendChild(div);
   langkahCount++;
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
 }
 function refreshNums() {
   document.querySelectorAll('.langkah-num').forEach((el, i) => el.textContent = i + 1);
@@ -176,10 +191,45 @@ function showPhHint(val) {
 // ---- Flash message auto-dismiss ----
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
-  initStageValidation();
+  initGlobalFormValidation();
   const flash = document.querySelector('.flash-success');
   if (flash) setTimeout(() => flash.remove(), 4000);
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  // ---- Nav scroll hint for mobile stage tabs ----
+  initNavScrollHint();
 });
+
+function initNavScrollHint() {
+  const nav    = document.getElementById('sidebar-nav-scroll');
+  const hint   = document.getElementById('nav-scroll-hint');
+  if (!nav || !hint) return;
+
+  function updateHint() {
+    // Only show on mobile (when sidebar is a topbar)
+    const isMobile = window.innerWidth <= 900;
+    if (!isMobile) {
+      hint.classList.add('hidden');
+      return;
+    }
+    // Check if there's overflow to scroll
+    const hasOverflow = nav.scrollWidth > nav.clientWidth + 4;
+    const scrolledEnough = nav.scrollLeft > 32;
+    if (!hasOverflow || scrolledEnough) {
+      hint.classList.add('hidden');
+    } else {
+      hint.classList.remove('hidden');
+    }
+  }
+
+  nav.addEventListener('scroll', updateHint, { passive: true });
+  window.addEventListener('resize', updateHint);
+  // Run once after icons are rendered (slight delay for layout)
+  setTimeout(updateHint, 300);
+}
+
 
 // Legacy shim: if the modular validator is available (resources/js build), call it
 document.addEventListener('DOMContentLoaded', () => {
@@ -188,43 +238,150 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function initStageValidation() {
-  document.querySelectorAll('.stage-form').forEach(form => {
+function initGlobalFormValidation() {
+  document.querySelectorAll('form').forEach(form => {
     if (form.dataset.validationBound === '1') return;
     form.dataset.validationBound = '1';
-    form.addEventListener('submit', e => {
-      const requiredFields = Array.from(form.querySelectorAll('[required]'));
-      for (const field of requiredFields) {
-        if ((field.type === 'radio' || field.type === 'checkbox')) {
-          const anyChecked = Array.from(form.querySelectorAll('[name="' + field.name + '"]')).some(el => el.checked);
-          if (!anyChecked) {
-            e.preventDefault();
-            alert('Mohon lengkapi semua kolom yang wajib diisi sebelum menyimpan.');
-            field.focus();
-            return;
-          }
-          continue;
-        }
 
-        if (field.type === 'file') {
-          if (!field.files || field.files.length === 0) {
-            e.preventDefault();
-            alert('Foto wajib belum diunggah.');
-            field.focus();
-            return;
-          }
-          continue;
-        }
+    const escapeSelector = value => {
+      if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
+      return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    };
 
-        if (!field.value || field.value.toString().trim() === '') {
-          e.preventDefault();
-          alert('Mohon lengkapi semua kolom yang wajib diisi sebelum menyimpan.');
-          field.focus();
-          return;
-        }
+    form.noValidate = true;
+
+    const clearFieldState = field => {
+      field.classList.remove('validation-field-error');
+      field.removeAttribute('aria-invalid');
+      const group = field.closest('.form-group, .organo-block, .photo-upload-area, .photo-upload-area-sm');
+      if (group) group.classList.remove('validation-group-error');
+    };
+
+    const markFieldState = field => {
+      field.classList.add('validation-field-error');
+      field.setAttribute('aria-invalid', 'true');
+      const group = field.closest('.form-group, .organo-block, .photo-upload-area, .photo-upload-area-sm');
+      if (group) group.classList.add('validation-group-error');
+    };
+
+    const getFieldLabel = field => {
+      const id = field.id;
+      if (id) {
+        const label = form.querySelector('label[for="' + escapeSelector(id) + '"]');
+        if (label) return label.textContent.replace(/\s+/g, ' ').trim();
       }
+
+      const groupLabel = field.closest('.form-group, .organo-block, .photo-upload-area, .photo-upload-area-sm')?.querySelector('label, .organo-header, .current-photo-label, h4, h3, p');
+      if (groupLabel) {
+        return groupLabel.textContent.replace(/\s+/g, ' ').trim();
+      }
+
+      if (field.placeholder) return field.placeholder.replace(/\s+/g, ' ').trim();
+      if (field.name) return field.name.replace(/_/g, ' ');
+      return 'kolom ini';
+    };
+
+    const isFieldMissing = field => {
+      if (field.disabled) return false;
+      if (field.type === 'radio' || field.type === 'checkbox') {
+        const checked = form.querySelectorAll('input[name="' + escapeSelector(field.name) + '"]:checked');
+        return checked.length === 0;
+      }
+      if (field.type === 'file') return !field.files || field.files.length === 0;
+      if (field.tagName === 'SELECT') return !field.value;
+      return !field.value || field.value.toString().trim() === '';
+    };
+
+    const showValidationToast = (title, details) => {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const oldToast = container.querySelector('.validation-toast');
+      if (oldToast) oldToast.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast validation-toast show';
+      toast.innerHTML = `
+        <div class="toast-icon"><i data-lucide="alert-triangle" style="width:20px;height:20px;color:var(--warning);"></i></div>
+        <div class="toast-body">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${details}</div>
+        </div>
+        <button type="button" class="toast-close" aria-label="Tutup">×</button>
+      `;
+      toast.querySelector('.toast-close')?.addEventListener('click', () => toast.remove());
+      container.appendChild(toast);
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+      window.setTimeout(() => toast.remove(), 5500); // slightly longer to read lists
+    };
+
+    const focusFirstInvalid = fields => {
+      const first = fields[0];
+      if (!first) return;
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      first.focus({ preventScroll: true });
+    };
+
+    const getMissingFields = () => {
+      const requiredFields = Array.from(form.querySelectorAll('[required]'));
+      const seen = new Set();
+      const missing = [];
+
+      requiredFields.forEach(field => {
+        const key = field.type === 'radio' || field.type === 'checkbox' ? field.name : field;
+        if (seen.has(key)) return;
+        if (isFieldMissing(field)) {
+          missing.push(field);
+          markFieldState(field);
+        }
+        seen.add(key);
+      });
+
+      return missing;
+    };
+
+    form.addEventListener('input', e => {
+      const field = e.target;
+      if (!field.matches?.('[required]')) return;
+      if (!isFieldMissing(field)) clearFieldState(field);
+    });
+
+    form.addEventListener('change', e => {
+      const field = e.target;
+      if (!field.matches?.('[required]')) return;
+      if (!isFieldMissing(field)) clearFieldState(field);
+    });
+
+    form.addEventListener('submit', e => {
+      const missingFields = getMissingFields();
+      if (!missingFields.length) return;
+
+      e.preventDefault();
+
+      const fieldNames = missingFields.slice(0, 3).map(getFieldLabel);
+      const extraCount = missingFields.length - fieldNames.length;
+      
+      let detailHtml = '';
+      if (fieldNames.length > 0) {
+        detailHtml = '<ul class="toast-field-list">';
+        fieldNames.forEach(name => {
+          detailHtml += `<li><i data-lucide="chevron-right" style="width:12px;height:12px;color:var(--warning);margin-right:4px;"></i>${name}</li>`;
+        });
+        if (extraCount > 0) {
+          detailHtml += `<li class="toast-field-more">+ ${extraCount} kolom lainnya...</li>`;
+        }
+        detailHtml += '</ul>';
+      } else {
+        detailHtml = 'Silakan lengkapi semua kolom yang bertanda wajib.';
+      }
+
+      showValidationToast('Isian Belum Lengkap', detailHtml);
+      focusFirstInvalid(missingFields);
     });
   });
 }
 
-window.initStageValidation = initStageValidation;
+window.initStageValidation = initGlobalFormValidation;
+window.initGlobalFormValidation = initGlobalFormValidation;

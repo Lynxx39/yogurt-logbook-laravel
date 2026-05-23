@@ -176,7 +176,7 @@ class StudentController extends Controller
                 $rasa    = trim($request->input('jam0_rasa', ''));
                 $ph      = $request->input('jam0_ph');
                 $catatan = trim($request->input('jam0_catatan', ''));
-                if (!$proses || !$warna) return null;
+                if (!$proses || !$warna || !$ph) return null;
 
                 // Preserve existing photo path if present when student resubmits
                 $foto = $currentStage['jam0']['foto'] ?? null;
@@ -184,6 +184,13 @@ class StudentController extends Controller
                     $foto = $request->file('jam0_foto')->store('logbook-photos', 'public');
                 }
                 if (!$foto) return null;
+
+                $fotoPh0 = $currentStage['jam0']['ph_foto'] ?? null;
+                if ($request->hasFile('jam0_ph_foto') && $request->file('jam0_ph_foto')->isValid()) {
+                    $fotoPh0 = $request->file('jam0_ph_foto')->store('logbook-photos', 'public');
+                }
+                if (!$fotoPh0) return null;
+
                 return [
                     'proses'          => $proses,
                     'prediksi_jam'    => $prediksi,
@@ -193,7 +200,8 @@ class StudentController extends Controller
                         'aroma'   => $aroma ?: 'Aroma susu/ekstrak',
                         'tekstur' => 'Cair (awal fermentasi)',
                         'rasa'    => $rasa ?: 'Manis/sesuai ekstrak',
-                        'ph'      => $ph ? (float)$ph : null,
+                        'ph'      => (float)$ph,
+                        'ph_foto' => $fotoPh0,
                         'catatan' => $catatan,
                         'foto'    => $foto,
                     ],
@@ -208,7 +216,16 @@ class StudentController extends Controller
                 if (!$organo) return null;
                 $phAkhir = $request->input('ph_akhir');
                 $kesimpulan = trim($request->input('kesimpulan_awal', ''));
-                $organo['ph_akhir']       = $phAkhir ? (float)$phAkhir : null;
+                if (!$phAkhir) return null;
+
+                $fotoPh12 = $currentStage['ph_akhir_foto'] ?? null;
+                if ($request->hasFile('ph_akhir_foto') && $request->file('ph_akhir_foto')->isValid()) {
+                    $fotoPh12 = $request->file('ph_akhir_foto')->store('logbook-photos', 'public');
+                }
+                if (!$fotoPh12) return null;
+
+                $organo['ph_akhir']       = (float)$phAkhir;
+                $organo['ph_akhir_foto']  = $fotoPh12;
                 $organo['kesimpulan_awal'] = $kesimpulan;
                 return $organo;
         }
@@ -217,17 +234,34 @@ class StudentController extends Controller
 
     private function extractOrganoData(Request $request, ?array $currentStage = null): ?array
     {
-        $warna          = trim($request->input('warna', ''));
-        $warnaNormal    = $request->input('warna_normal') === '1';
-        $aroma          = trim($request->input('aroma', ''));
-        $aromaNormal    = $request->input('aroma_normal') === '1';
-        $tekstur        = trim($request->input('tekstur', ''));
-        $teksturNormal  = $request->input('tekstur_normal') === '1';
-        $rasa           = trim($request->input('rasa', ''));
-        $rasaNormal     = $request->input('rasa_normal') === '1';
-        $catatan        = trim($request->input('catatan', ''));
+        $warna      = trim($request->input('warna', ''));
+        $warnaOpsi  = $request->input('warna_opsi', []);
+        $aroma      = trim($request->input('aroma', ''));
+        $aromaOpsi  = $request->input('aroma_opsi', []);
+        $tekstur    = trim($request->input('tekstur', ''));
+        $rasa       = trim($request->input('rasa', ''));
+        $rasaOpsi   = $request->input('rasa_opsi', []);
+        $catatan    = trim($request->input('catatan', ''));
 
         if (!$warna || !$aroma || !$tekstur || !$rasa) return null;
+
+        // Auto-calculate normal status based on selected descriptive options
+        $warnaNormal = true;
+        if (in_array('muncul bercak hitam/hijau/abu-abu (tekstur jamur)', $warnaOpsi)) {
+            $warnaNormal = false;
+        }
+
+        $aromaNormal = true;
+        if (array_intersect($aromaOpsi, ['busuk / tengik', 'tidak berbau sama sekali'])) {
+            $aromaNormal = false;
+        }
+
+        $rasaNormal = true;
+        if (array_intersect($rasaOpsi, ['hambar', 'rasa asing (pahit/basi)'])) {
+            $rasaNormal = false;
+        }
+
+        $teksturNormal = $tekstur !== 'cair/encer';
 
         // Preserve existing foto value if present when resubmitting
         $foto = $currentStage['foto'] ?? null;
@@ -237,12 +271,15 @@ class StudentController extends Controller
 
         return [
             'warna'          => $warna,
+            'warna_opsi'     => $warnaOpsi,
             'warna_normal'   => $warnaNormal,
             'aroma'          => $aroma,
+            'aroma_opsi'     => $aromaOpsi,
             'aroma_normal'   => $aromaNormal,
             'tekstur'        => $tekstur,
             'tekstur_normal' => $teksturNormal,
             'rasa'           => $rasa,
+            'rasa_opsi'      => $rasaOpsi,
             'rasa_normal'    => $rasaNormal,
             'catatan'        => $catatan,
             'foto'           => $foto,

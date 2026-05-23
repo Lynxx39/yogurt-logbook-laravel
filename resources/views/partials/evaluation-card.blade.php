@@ -1,7 +1,13 @@
 @php $ok = $evaluation['result'] === 'berhasil'; @endphp
 <div class="evaluation-card {{ $ok ? 'eval-success' : 'eval-fail' }}">
   <div class="eval-header">
-    <div class="eval-emoji">{{ $ok ? '🚀' : '🧪' }}</div>
+    <div class="eval-emoji">
+      @if($ok)
+        <i data-lucide="rocket" style="width:40px;height:40px;color:var(--success);display:block;"></i>
+      @else
+        <i data-lucide="flask-conical" style="width:40px;height:40px;color:var(--warning);display:block;"></i>
+      @endif
+    </div>
     <div>
       <div class="eval-title">
         @if($ok) Fermentasi Yogurt Kelompokmu <span style="text-decoration:underline">BERHASIL!</span>
@@ -19,7 +25,13 @@
   <div class="eval-indicators">
     @foreach($evaluation['indicators'] as $ind)
     <div class="indicator-row {{ $ind['passed'] ? 'passed' : 'failed' }}">
-      <span class="ind-check">{{ $ind['passed'] ? '✔️' : '✖️' }}</span>
+      <span class="ind-check">
+        @if($ind['passed'])
+          <i data-lucide="check-circle" style="width:16px;height:16px;color:var(--success);display:block;"></i>
+        @else
+          <i data-lucide="x-circle" style="width:16px;height:16px;color:var(--error);display:block;"></i>
+        @endif
+      </span>
       <div class="ind-content">
         <span class="ind-label">{{ $ind['label'] }}</span>
         <span class="ind-actual">{{ $ind['actual'] }}</span>
@@ -31,7 +43,8 @@
 
   <div class="eval-verdict">
     @if($ok)
-      ✨ <strong>Selamat!</strong> Yogurt yang baik memiliki pH 3,8–4,5 dan tekstur semi-padat.
+      <i data-lucide="sparkles" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;color:var(--gold);"></i>
+      <strong>Selamat!</strong> Yogurt yang baik memiliki tekstur semi-padat dan kualitas organoleptik yang normal.
       Fermentasi laktat oleh bakteri <em>Lactobacillus</em> berjalan dengan baik!
     @else
       @php
@@ -45,7 +58,8 @@
           if (str_contains($f['label'], 'Warna')) $reasons[] = 'warna menunjukkan tanda kontaminasi';
         }
       @endphp
-      ❖ Fermentasi belum optimal karena: <strong>{{ implode(', ', $reasons) }}</strong>.
+      <i data-lucide="alert-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;color:var(--warning);"></i>
+      Fermentasi belum optimal karena: <strong>{{ implode(', ', $reasons) }}</strong>.
       Kemungkinan penyebab: starter kurang aktif, suhu terlalu rendah, atau terjadi kontaminasi.
       Analisis lebih lanjut di tahap evaluasi poster!
     @endif

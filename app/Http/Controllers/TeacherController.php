@@ -67,4 +67,30 @@ class TeacherController extends Controller
         }
         return $result;
     }
+
+    public function resetStage(string $username, int $n)
+    {
+        if ($n < 1 || $n > 4) return redirect('/teacher');
+        $sessionUser = session('user');
+        if (!is_array($sessionUser) || !isset($sessionUser['id']) || $sessionUser['role'] !== 'guru') {
+            return redirect('/login');
+        }
+
+        $student = User::where('username', $username)->where('role', 'siswa')->firstOrFail();
+        $logbook = Logbook::where('user_id', $student->id)->first();
+        if ($logbook) {
+            // Delete only stage n
+            \App\Models\LogbookStage::where('logbook_id', $logbook->id)
+                ->where('stage_number', $n)
+                ->delete();
+
+            if ($n === 4) {
+                \App\Models\LogbookStage::where('logbook_id', $logbook->id)
+                    ->where('stage_number', 5)
+                    ->delete();
+            }
+        }
+
+        return redirect()->route('teacher.student', $username)->with('success', '✔️ Tahap ' . $n . ' milik siswa ' . $student->name . ' telah berhasil di-reset.');
+    }
 }

@@ -10,7 +10,7 @@
   </div>
   <div class="landing-content">
     <div class="landing-hero">
-      <span class="logo-badge">🥣</span>
+      <span class="logo-badge"><i data-lucide="beaker" style="width: 48px; height: 48px; color: var(--accent);"></i></span>
       <h1 class="landing-title">YogurtTrack</h1>
       <p class="landing-subtitle">Platform logbook digital pemantau proyek<br>fermentasi yogurt berbasis sains</p>
     </div>
@@ -41,7 +41,7 @@
           <div class="input-with-toggle">
             <input type="password" id="login-password" name="password"
                    placeholder="Masukkan password" required autocomplete="current-password">
-            <button type="button" class="toggle-pass" onclick="togglePw('login-password')" aria-label="Tampilkan password" title="Tampilkan password">👁</button>
+            <button type="button" class="toggle-pass" onclick="togglePw('login-password')" aria-label="Tampilkan password" title="Tampilkan password"><i data-lucide="eye" style="width: 18px; height: 18px;"></i></button>
           </div>
         </div>
         @if($errors->has('login'))
@@ -77,21 +77,21 @@
           <div class="input-with-toggle">
             <input type="password" id="reg-password" name="password"
                    placeholder="Minimal 4 karakter" required>
-            <button type="button" class="toggle-pass" onclick="togglePw('reg-password')" aria-label="Tampilkan password" title="Tampilkan password">👁</button>
+            <button type="button" class="toggle-pass" onclick="togglePw('reg-password')" aria-label="Tampilkan password" title="Tampilkan password"><i data-lucide="eye" style="width: 18px; height: 18px;"></i></button>
           </div>
         </div>
         @if($errors->any())
           <div class="form-error">{{ $errors->first() }}</div>
         @endif
-        <button type="submit" class="btn btn-primary btn-full btn-lg">Daftar & Masuk ↗</button>
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Daftar & Masuk <i data-lucide="arrow-up-right" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-left: 2px;"></i></button>
       </form>
     </div>
 
     <div class="landing-features">
-      <div class="feature-chip">⚗️ Uji Organoleptik</div>
-      <div class="feature-chip">📈 Evaluasi Otomatis</div>
-      <div class="feature-chip">🖼️ Upload Foto</div>
-      <div class="feature-chip">🧑‍🏫 Pemantauan Guru</div>
+      <div class="feature-chip"><i data-lucide="microscope" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; color: var(--accent);"></i> Uji Organoleptik</div>
+      <div class="feature-chip"><i data-lucide="activity" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; color: var(--accent);"></i> Evaluasi Otomatis</div>
+      <div class="feature-chip"><i data-lucide="camera" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; color: var(--accent);"></i> Upload Foto</div>
+      <div class="feature-chip"><i data-lucide="users" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; color: var(--accent);"></i> Pemantauan Guru</div>
     </div>
   </div>
 </div>
